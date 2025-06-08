@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.math.BigDecimal;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,6 +41,9 @@ public class MusicCopyright {
     @Column(name = "image_url", nullable = false, length = 800)
     private String imageUrl;
 
+    @Column(name = "price", nullable = false, precision = 8, scale = 4)
+    private BigDecimal price;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -47,7 +52,7 @@ public class MusicCopyright {
     @Builder
     private MusicCopyright(String title, String singer, String composer, String lyricist,
                            String streamingUrl, Boolean isRegistered, String registrationDoc,
-                           String imageUrl, User owner) {
+                           String imageUrl, BigDecimal price, User owner) {
         this.title = title;
         this.singer = singer;
         this.composer = composer;
@@ -56,12 +61,13 @@ public class MusicCopyright {
         this.isRegistered = isRegistered;
         this.registrationDoc = registrationDoc;
         this.imageUrl = imageUrl;
+        this.price = price;
         this.owner = owner;
     }
 
     public static MusicCopyright create(String title, String singer, String composer, String lyricist,
                                         String streamingUrl, Boolean isRegistered, String registrationDoc,
-                                        String imageUrl, User owner) {
+                                        String imageUrl, BigDecimal price, User owner) {
         return MusicCopyright.builder()
                 .title(title)
                 .singer(singer)
@@ -71,6 +77,7 @@ public class MusicCopyright {
                 .isRegistered(isRegistered)
                 .registrationDoc(registrationDoc)
                 .imageUrl(imageUrl)
+                .price(price)
                 .owner(owner)
                 .build();
     }
