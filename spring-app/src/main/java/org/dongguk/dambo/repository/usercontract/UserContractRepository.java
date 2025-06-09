@@ -29,7 +29,7 @@ public interface UserContractRepository extends JpaRepository<UserContract, Long
     List<ActiveContractProjection> findActiveContractsByUserIdAndStatusesAndRole(
             Long userId,
             List<EContractStatus> statuses,
-            EContractRole role
+            EContractRole eRole
     );
 
 }

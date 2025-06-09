@@ -18,9 +18,9 @@ public class UserContractRetriever {
     public List<ActiveContractResponse> findActiveContractsByUserAndStatusesAndRole(
             Long userId,
             List<EContractStatus> statuses,
-            EContractRole role
+            EContractRole eRole
     ) {
-        return userContractRepository.findActiveContractsByUserIdAndStatusesAndRole(userId, statuses, role)
+        return userContractRepository.findActiveContractsByUserIdAndStatusesAndRole(userId, statuses, eRole)
                 .stream()
                 .map(ActiveContractResponse::from)
                 .collect(Collectors.toList());
