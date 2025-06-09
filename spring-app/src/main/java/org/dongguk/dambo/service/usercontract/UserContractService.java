@@ -13,14 +13,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserContractService {
     private final UserContractRetriever userContractRetriever;
+    private final UserContractConverter userContractConverter;
 
     public ActiveContractListResponse getActiveContractsByUserIdAndStatuesAndRole(
             Long userId,
-            List<EContractStatus> statuses,
-            EContractRole role
+            String status,
+            String role
     ) {
+        List<EContractStatus> statuses = userContractConverter.convertToEContractStatus(status);
+        EContractRole eRole = userContractConverter.convertToContractRole(role);
+
         List<ActiveContractResponse> activeContractResponseList
-                = userContractRetriever.findActiveContractsByUserAndStatusesAndRole(userId, statuses, role);
+                = userContractRetriever.findActiveContractsByUserAndStatusesAndRole(userId, statuses, eRole);
 
         return ActiveContractListResponse.from(activeContractResponseList);
     }
