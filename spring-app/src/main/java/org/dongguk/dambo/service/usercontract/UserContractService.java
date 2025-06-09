@@ -3,6 +3,7 @@ package org.dongguk.dambo.service.usercontract;
 import lombok.RequiredArgsConstructor;
 import org.dongguk.dambo.domain.type.EContractRole;
 import org.dongguk.dambo.domain.type.EContractStatus;
+import org.dongguk.dambo.dto.usercontract.response.ActiveContractCountResponse;
 import org.dongguk.dambo.dto.usercontract.response.ActiveContractListResponse;
 import org.dongguk.dambo.dto.usercontract.response.ActiveContractResponse;
 import org.springframework.stereotype.Service;
@@ -27,5 +28,18 @@ public class UserContractService {
                 = userContractRetriever.findActiveContractsByUserAndStatusesAndRole(userId, statuses, eRole);
 
         return ActiveContractListResponse.from(activeContractResponseList);
+    }
+
+    public ActiveContractCountResponse getActiveContractsCountByUserIdAndStatuesAndRole(
+            Long userId,
+            String status,
+            String role
+    ) {
+        List<EContractStatus> statuses = userContractConverter.convertToEContractStatus(status);
+        EContractRole eRole = userContractConverter.convertToContractRole(role);
+
+        return ActiveContractCountResponse.of(
+                userContractRetriever.findActiveContractsCountByUserAndStatusesAndRole(userId, statuses, eRole)
+        );
     }
 }

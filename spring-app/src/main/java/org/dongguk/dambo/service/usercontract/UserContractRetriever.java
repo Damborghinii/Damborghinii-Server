@@ -25,4 +25,12 @@ public class UserContractRetriever {
                 .map(ActiveContractResponse::from)
                 .collect(Collectors.toList());
     }
+
+    public Long findActiveContractsCountByUserAndStatusesAndRole(
+            Long userId,
+            List<EContractStatus> statuses,
+            EContractRole eRole
+    ) {
+        return userContractRepository.findActiveContractsCountByUserIdAndStatusesAndRole(userId, statuses, eRole);
+    }
 }
