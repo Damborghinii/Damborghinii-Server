@@ -2,7 +2,7 @@ package org.dongguk.dambo.repository.usercontract;
 
 import org.dongguk.dambo.domain.entity.UserContract;
 import org.dongguk.dambo.domain.type.EContractRole;
-import org.dongguk.dambo.dto.usercontract.response.ActiveContractResponse;
+import org.dongguk.dambo.domain.type.EContractStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -10,16 +10,15 @@ import java.util.List;
 
 public interface UserContractRepository extends JpaRepository<UserContract, Long> {
     @Query("""
-            SELECT new org.dongguk.dambo.dto.usercontract.response.ActiveContractResponse(
-                c.loanAmount,
-                c.interestRate,
-                mc.owner.name,
-                mc.price,
-                c.status,
-                ip.progress,
-                uc.investment,
-                uc.stake
-            )
+            SELECT
+                c.loanAmount as loanAmount,
+                c.interestRate as interestRate,
+                mc.owner.name as owner,
+                mc.price as price,
+                c.status as status,
+                ip.progress as progress,
+                uc.investment as investment,
+                uc.stake as stake
             FROM UserContract uc
             JOIN uc.contract c
             JOIN c.musicCopyright mc
@@ -27,11 +26,10 @@ public interface UserContractRepository extends JpaRepository<UserContract, Long
             WHERE uc.user.id = :userId
             AND c.status IN :statuses
             AND uc.role = :role""")
-    List<ActiveContractResponse> findActiveContractsByUserIdAndStatusesAndRole(
+    List<ActiveContractProjection> findActiveContractsByUserIdAndStatusesAndRole(
             Long userId,
-            List<String> statuses,
+            List<EContractStatus> statuses,
             EContractRole role
     );
-
 
 }

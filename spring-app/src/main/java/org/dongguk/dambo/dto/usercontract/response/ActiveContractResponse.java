@@ -1,7 +1,7 @@
 package org.dongguk.dambo.dto.usercontract.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.dongguk.dambo.domain.type.EContractStatus;
+import org.dongguk.dambo.repository.usercontract.ActiveContractProjection;
 
 import java.math.BigDecimal;
 
@@ -23,16 +23,16 @@ public record ActiveContractResponse(
         @JsonProperty("stake")
         BigDecimal stake
 ) {
-        public ActiveContractResponse(
-                Long loanAmount,
-                BigDecimal interestRate,
-                String owner,
-                BigDecimal price,
-                EContractStatus status,
-                BigDecimal progress,
-                Long investment,
-                BigDecimal stake
-        ) {
-                this(loanAmount, interestRate, owner, price, status.getLabel(), progress, investment, stake);
+        public static ActiveContractResponse from(ActiveContractProjection activeContractProjection){
+                return new ActiveContractResponse(
+                        activeContractProjection.getLoanAmount(),
+                        activeContractProjection.getInterestRate(),
+                        activeContractProjection.getOwner(),
+                        activeContractProjection.getPrice(),
+                        activeContractProjection.getStatus(),
+                        activeContractProjection.getProgress(),
+                        activeContractProjection.getInvestment(),
+                        activeContractProjection.getStake()
+                );
         }
 }
