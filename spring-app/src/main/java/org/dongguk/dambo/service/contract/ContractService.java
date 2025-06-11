@@ -10,6 +10,7 @@ import org.dongguk.dambo.implement.contract.ContractUpdater;
 import org.dongguk.dambo.implement.user.UserReader;
 import org.dongguk.dambo.implement.investmentprogress.InvestmentProgressSaver;
 import org.dongguk.dambo.implement.usercontract.UserContractSaver;
+import org.dongguk.dambo.util.InterestRateUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,10 @@ public class ContractService {
         Long loanAmount = loanCreateRequest.loanAmount();
         Integer repaymentCount = loanCreateRequest.repaymentCount();
 
-        contractUpdater.updateContract(currentContract, loanAmount, repaymentCount);
+        BigDecimal interestRate = InterestRateUtil.getInterestRate(
+                currentContract.getMusicCopyright().getWonPrice()
+        );
+        contractUpdater.updateContract(currentContract, loanAmount, repaymentCount, interestRate);
 
         UserContract currentUserContract = UserContract.create(
                 EContractRole.BORROWER,
