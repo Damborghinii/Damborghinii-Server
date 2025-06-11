@@ -53,6 +53,9 @@ dependencies {
 
 	// Stream (translate Multipart)
 	implementation 'org.reactivestreams:reactive-streams:1.0.4'
+
+	// web3j
+	implementation 'org.web3j:core:4.14.0'
 }
 
 tasks.named('test') {
