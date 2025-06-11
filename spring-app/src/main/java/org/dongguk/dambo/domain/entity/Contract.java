@@ -22,13 +22,13 @@ public class Contract {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "loan_amount", nullable = false)
+    @Column(name = "loan_amount")
     private Long loanAmount;
 
-    @Column(name = "repayment_count", nullable = false)
+    @Column(name = "repayment_count")
     private Integer repaymentCount;
 
-    @Column(name = "interest_rate", nullable = false, precision = 5, scale = 4)
+    @Column(name = "interest_rate", precision = 5, scale = 4)
     private BigDecimal interestRate;
 
     @Enumerated(EnumType.STRING)
@@ -69,5 +69,13 @@ public class Contract {
                 .loanEndDate(loanEndDate)
                 .musicCopyright(copyright)
                 .build();
+    }
+    public void updateContractOnLoan(
+            Long loanAmount,
+            Integer repaymentCount
+    ) {
+        this.loanAmount = loanAmount;
+        this.repaymentCount = repaymentCount;
+        this.status = EContractStatus.INVESTING;
     }
 }
