@@ -17,7 +17,7 @@ public class UserContractController {
     @GetMapping("/active")
     public BaseResponse<ActiveContractListResponse> getActiveContracts(
             @RequestHeader("user_id") Long userId,
-            @RequestParam("status") String status,
+            @RequestParam String status,
             @RequestParam String role
     ) {
         return BaseResponse.success(userContractService.getActiveContractsByUserIdAndStatuesAndRole(userId, status, role));
@@ -26,7 +26,7 @@ public class UserContractController {
     @GetMapping("/active/count")
     public BaseResponse<ActiveContractCountResponse> getActiveContractsCount(
             @RequestHeader("user_id") Long userId,
-            @RequestParam("status") String status,
+            @RequestParam String status,
             @RequestParam String role
     ) {
         return BaseResponse.success(userContractService.getActiveContractsCountByUserIdAndStatuesAndRole(userId, status, role));

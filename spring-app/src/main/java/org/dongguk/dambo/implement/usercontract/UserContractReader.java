@@ -1,4 +1,4 @@
-package org.dongguk.dambo.service.usercontract;
+package org.dongguk.dambo.implement.usercontract;
 
 import lombok.RequiredArgsConstructor;
 import org.dongguk.dambo.domain.type.EContractRole;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class UserContractRetriever {
+public class UserContractReader {
     private final UserContractRepository userContractRepository;
 
     public List<ActiveContractResponse> findActiveContractsByUserAndStatusesAndRole(

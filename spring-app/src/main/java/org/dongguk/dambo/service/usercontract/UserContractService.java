@@ -6,6 +6,7 @@ import org.dongguk.dambo.domain.type.EContractStatus;
 import org.dongguk.dambo.dto.usercontract.response.ActiveContractCountResponse;
 import org.dongguk.dambo.dto.usercontract.response.ActiveContractListResponse;
 import org.dongguk.dambo.dto.usercontract.response.ActiveContractResponse;
+import org.dongguk.dambo.implement.usercontract.UserContractReader;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,19 +14,18 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserContractService {
-    private final UserContractRetriever userContractRetriever;
-    private final UserContractConverter userContractConverter;
+    private final UserContractReader userContractReader;
 
     public ActiveContractListResponse getActiveContractsByUserIdAndStatuesAndRole(
             Long userId,
             String status,
             String role
     ) {
-        List<EContractStatus> statuses = userContractConverter.convertToEContractStatus(status);
-        EContractRole eRole = userContractConverter.convertToContractRole(role);
+        List<EContractStatus> statuses = EContractStatus.convertToEContractStatus(status);
+        EContractRole eRole = EContractRole.convertToContractRole(role);
 
         List<ActiveContractResponse> activeContractResponseList
-                = userContractRetriever.findActiveContractsByUserAndStatusesAndRole(userId, statuses, eRole);
+                = userContractReader.findActiveContractsByUserAndStatusesAndRole(userId, statuses, eRole);
 
         return ActiveContractListResponse.from(activeContractResponseList);
     }
@@ -35,11 +35,11 @@ public class UserContractService {
             String status,
             String role
     ) {
-        List<EContractStatus> statuses = userContractConverter.convertToEContractStatus(status);
-        EContractRole eRole = userContractConverter.convertToContractRole(role);
+        List<EContractStatus> statuses = EContractStatus.convertToEContractStatus(status);
+        EContractRole eRole = EContractRole.convertToContractRole(role);
 
         return ActiveContractCountResponse.of(
-                userContractRetriever.findActiveContractsCountByUserAndStatusesAndRole(userId, statuses, eRole)
+                userContractReader.findActiveContractsCountByUserAndStatusesAndRole(userId, statuses, eRole)
         );
     }
 }
