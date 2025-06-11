@@ -6,7 +6,7 @@ public interface ActiveContractProjection {
     Long getLoanAmount();
     BigDecimal getInterestRate();
     String getOwner();
-    BigDecimal getPrice();
+    BigDecimal getEthPrice();
     String getStatus();
     BigDecimal getProgress();
     Long getInvestment();

@@ -2,6 +2,7 @@ package org.dongguk.dambo.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.dongguk.dambo.constant.Constants;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -41,8 +42,12 @@ public class MusicCopyright {
     @Column(name = "image_url", nullable = false, length = 800)
     private String imageUrl;
 
-    @Column(name = "price", nullable = false, precision = 8, scale = 4)
-    private BigDecimal price;
+    @Column(name = "eth_price", nullable = false, precision = 8, scale = 4)
+    private BigDecimal ethPrice;
+
+    @Column(name = "won_price", nullable = false)
+    private Long wonPrice;
+
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id", nullable = false)
@@ -52,7 +57,7 @@ public class MusicCopyright {
     @Builder
     private MusicCopyright(String title, String singer, String composer, String lyricist,
                            String streamingUrl, Boolean isRegistered, String registrationDoc,
-                           String imageUrl, BigDecimal price, User owner) {
+                           String imageUrl, BigDecimal ethPrice, Long wonPrice, User owner) {
         this.title = title;
         this.singer = singer;
         this.composer = composer;
@@ -61,13 +66,14 @@ public class MusicCopyright {
         this.isRegistered = isRegistered;
         this.registrationDoc = registrationDoc;
         this.imageUrl = imageUrl;
-        this.price = price;
+        this.ethPrice = ethPrice;
+        this.wonPrice = wonPrice;
         this.owner = owner;
     }
 
     public static MusicCopyright create(String title, String singer, String composer, String lyricist,
                                         String streamingUrl, Boolean isRegistered, String registrationDoc,
-                                        String imageUrl, BigDecimal price, User owner) {
+                                        String imageUrl, BigDecimal ethPrice, User owner) {
         return MusicCopyright.builder()
                 .title(title)
                 .singer(singer)
@@ -77,7 +83,8 @@ public class MusicCopyright {
                 .isRegistered(isRegistered)
                 .registrationDoc(registrationDoc)
                 .imageUrl(imageUrl)
-                .price(price)
+                .ethPrice(ethPrice)
+                .wonPrice(ethPrice.longValue() * Constants.EthereumMarketPrice)
                 .owner(owner)
                 .build();
     }

@@ -72,10 +72,12 @@ public class Contract {
     }
     public void updateContractOnLoan(
             Long loanAmount,
-            Integer repaymentCount
+            Integer repaymentCount,
+            BigDecimal interestRate
     ) {
         this.loanAmount = loanAmount;
         this.repaymentCount = repaymentCount;
+        this.interestRate = interestRate;
         this.status = EContractStatus.INVESTING;
     }
 }

@@ -12,8 +12,8 @@ public record ActiveContractResponse(
         BigDecimal interestRate,
         @JsonProperty("owner")
         String owner,
-        @JsonProperty("price")
-        BigDecimal price,
+        @JsonProperty("eth_price")
+        BigDecimal ehtPrice,
         @JsonProperty("status")
         String status,
         @JsonProperty("progress")
@@ -28,7 +28,7 @@ public record ActiveContractResponse(
                         activeContractProjection.getLoanAmount(),
                         activeContractProjection.getInterestRate(),
                         activeContractProjection.getOwner(),
-                        activeContractProjection.getPrice(),
+                        activeContractProjection.getEthPrice(),
                         activeContractProjection.getStatus(),
                         activeContractProjection.getProgress(),
                         activeContractProjection.getInvestment(),

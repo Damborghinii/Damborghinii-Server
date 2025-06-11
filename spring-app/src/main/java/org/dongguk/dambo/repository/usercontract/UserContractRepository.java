@@ -14,7 +14,7 @@ public interface UserContractRepository extends JpaRepository<UserContract, Long
                 c.loanAmount as loanAmount,
                 c.interestRate as interestRate,
                 mc.owner.name as owner,
-                mc.price as price,
+                mc.ethPrice as ethPrice,
                 c.status as status,
                 ip.progress as progress,
                 uc.investment as investment,
