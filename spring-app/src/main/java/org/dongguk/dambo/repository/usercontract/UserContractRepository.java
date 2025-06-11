@@ -25,11 +25,11 @@ public interface UserContractRepository extends JpaRepository<UserContract, Long
             JOIN InvestmentProgress ip ON ip.contract.id = c.id
             WHERE uc.user.id = :userId
             AND c.status IN :statuses
-            AND uc.role = :eRole""")
+            AND uc.role = :role""")
     List<ActiveContractProjection> findActiveContractsByUserIdAndStatusesAndRole(
             Long userId,
             List<EContractStatus> statuses,
-            EContractRole eRole
+            EContractRole role
     );
 
     @Query("""
@@ -41,10 +41,10 @@ public interface UserContractRepository extends JpaRepository<UserContract, Long
             JOIN InvestmentProgress ip ON ip.contract.id = c.id
             WHERE uc.user.id = :userId
             AND c.status IN :statuses
-            AND uc.role = :eRole""")
+            AND uc.role = :role""")
     Long findActiveContractsCountByUserIdAndStatusesAndRole(
             Long userId,
             List<EContractStatus> statuses,
-            EContractRole eRole
+            EContractRole role
     );
 }

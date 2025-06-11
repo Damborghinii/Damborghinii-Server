@@ -18,9 +18,9 @@ public class UserContractReader {
     public List<ActiveContractResponse> findActiveContractsByUserAndStatusesAndRole(
             Long userId,
             List<EContractStatus> statuses,
-            EContractRole eRole
+            EContractRole role
     ) {
-        return userContractRepository.findActiveContractsByUserIdAndStatusesAndRole(userId, statuses, eRole)
+        return userContractRepository.findActiveContractsByUserIdAndStatusesAndRole(userId, statuses, role)
                 .stream()
                 .map(ActiveContractResponse::from)
                 .collect(Collectors.toList());
@@ -29,8 +29,8 @@ public class UserContractReader {
     public Long findActiveContractsCountByUserAndStatusesAndRole(
             Long userId,
             List<EContractStatus> statuses,
-            EContractRole eRole
+            EContractRole role
     ) {
-        return userContractRepository.findActiveContractsCountByUserIdAndStatusesAndRole(userId, statuses, eRole);
+        return userContractRepository.findActiveContractsCountByUserIdAndStatusesAndRole(userId, statuses, role);
     }
 }
