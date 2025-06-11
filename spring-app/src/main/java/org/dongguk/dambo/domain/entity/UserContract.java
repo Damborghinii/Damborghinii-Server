@@ -26,7 +26,7 @@ public class UserContract {
     @Column(name = "investment")
     private Long investment;
 
-    @Column(name = "stake", nullable = false, precision = 3, scale = 1)
+    @Column(name = "stake", precision = 3, scale = 1)
     private BigDecimal stake;
 
     @Column(name = "repayment_count", nullable = false)
