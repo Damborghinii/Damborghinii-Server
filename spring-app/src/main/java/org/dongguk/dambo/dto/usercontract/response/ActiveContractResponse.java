@@ -6,13 +6,13 @@ import org.dongguk.dambo.repository.usercontract.ActiveContractProjection;
 import java.math.BigDecimal;
 
 public record ActiveContractResponse(
-        @JsonProperty("loan_amount")
+        @JsonProperty("loanAmount")
         Long loanAmount,
-        @JsonProperty("interest_rate")
+        @JsonProperty("interestRate")
         BigDecimal interestRate,
         @JsonProperty("owner")
         String owner,
-        @JsonProperty("eth_price")
+        @JsonProperty("ethPrice")
         BigDecimal ehtPrice,
         @JsonProperty("status")
         String status,
