@@ -27,6 +27,9 @@ public class RepaymentSchedule {
     @Column(name = "repayment_date", nullable = false)
     private LocalDate repaymentDate;
 
+    @Column(name = "settlement_date")
+    private LocalDate settlementDate;
+
     @Column(name = "repayment_amount", nullable = false)
     private Long repaymentAmount;
 
@@ -43,21 +46,23 @@ public class RepaymentSchedule {
     private UserContract userContract;
 
     @Builder
-    private RepaymentSchedule(Integer round, LocalDate repaymentDate, Long repaymentAmount,
+    private RepaymentSchedule(Integer round, LocalDate repaymentDate, LocalDate settlementDate, Long repaymentAmount,
                               Long lateFee, ERepaymentStatus repaymentStatus, UserContract userContract) {
         this.round = round;
         this.repaymentDate = repaymentDate;
+        this.settlementDate = settlementDate;
         this.repaymentAmount = repaymentAmount;
         this.lateFee = lateFee;
         this.repaymentStatus = repaymentStatus;
         this.userContract = userContract;
     }
 
-    public static RepaymentSchedule create(Integer round, LocalDate repaymentDate, Long repaymentAmount,
+    public static RepaymentSchedule create(Integer round, LocalDate repaymentDate, LocalDate settlementDate, Long repaymentAmount,
                                            Long lateFee, ERepaymentStatus repaymentStatus, UserContract userContract) {
         return RepaymentSchedule.builder()
                 .round(round)
                 .repaymentDate(repaymentDate)
+                .settlementDate(settlementDate)
                 .repaymentAmount(repaymentAmount)
                 .lateFee(lateFee)
                 .repaymentStatus(repaymentStatus)
