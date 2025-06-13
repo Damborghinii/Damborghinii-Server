@@ -2,7 +2,7 @@ package org.dongguk.dambo.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.dongguk.dambo.constant.Constants;
+import org.dongguk.dambo.constant.LoanConstants;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -84,7 +84,7 @@ public class MusicCopyright {
                 .registrationDoc(registrationDoc)
                 .imageUrl(imageUrl)
                 .ethPrice(ethPrice)
-                .wonPrice(ethPrice.longValue() * Constants.EthereumMarketPrice)
+                .wonPrice(ethPrice.longValue() * LoanConstants.EthereumMarketPrice)
                 .owner(owner)
                 .build();
     }
