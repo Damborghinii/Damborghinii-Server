@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.dongguk.dambo.core.common.BaseResponse;
 import org.dongguk.dambo.dto.usercontract.response.ActiveContractCountResponse;
 import org.dongguk.dambo.dto.usercontract.response.ActiveContractListResponse;
+import org.dongguk.dambo.dto.usercontract.response.SettlementManagementResponse;
 import org.dongguk.dambo.service.usercontract.UserContractService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class UserContractController {
 
     @GetMapping("/active")
     public BaseResponse<ActiveContractListResponse> getActiveContracts(
-            @RequestHeader("user_id") Long userId,
+            @RequestHeader Long userId,
             @RequestParam String status,
             @RequestParam String role
     ) {
@@ -25,10 +26,19 @@ public class UserContractController {
 
     @GetMapping("/active/count")
     public BaseResponse<ActiveContractCountResponse> getActiveContractsCount(
-            @RequestHeader("user_id") Long userId,
+            @RequestHeader Long userId,
             @RequestParam String status,
             @RequestParam String role
     ) {
         return BaseResponse.success(userContractService.getActiveContractsCountByUserIdAndStatuesAndRole(userId, status, role));
+    }
+
+    @GetMapping("/confirmed")
+    public BaseResponse<SettlementManagementResponse> getSettlementManagement(
+            @RequestHeader Long userId,
+            @RequestParam String status,
+            @RequestParam String role
+    ) {
+        return BaseResponse.success(userContractService.getSettlementManagement(userId, status, role));
     }
 }
