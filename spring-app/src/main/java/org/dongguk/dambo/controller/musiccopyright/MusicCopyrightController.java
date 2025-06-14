@@ -1,0 +1,32 @@
+package org.dongguk.dambo.controller.musiccopyright;
+
+import lombok.RequiredArgsConstructor;
+import org.dongguk.dambo.core.annotation.UserId;
+import org.dongguk.dambo.core.common.BaseResponse;
+import org.dongguk.dambo.dto.musiccopyright.response.CopyrightDetailResponse;
+import org.dongguk.dambo.dto.musiccopyright.response.MyCopyrightsResponse;
+import org.dongguk.dambo.service.musiccopyright.MusicCopyrightService;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1")
+public class MusicCopyrightController {
+    private final MusicCopyrightService musicCopyrightService;
+
+    @GetMapping("/me/copyrigts")
+    public BaseResponse<MyCopyrightsResponse> getMyNfts(
+            @UserId Long userId,
+            @RequestParam String status
+    ) {
+        return BaseResponse.success(musicCopyrightService.getMyNfts(userId, status));
+    }
+
+    @GetMapping("/copyrigts/{copyrightId}")
+    public BaseResponse<CopyrightDetailResponse> getCopyrightDetail(
+            @UserId Long userId,
+            @PathVariable Long copyrightId
+    ) {
+        return BaseResponse.success(musicCopyrightService.getCopyrightDetail(copyrightId));
+    }
+}
