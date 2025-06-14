@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +56,9 @@ public class NftService {
                 nftCreateRequest.isRegistered(),
                 "",
                 "",
-                BigDecimal.valueOf(10.2), // 수정 필요
+                BigDecimal.valueOf(
+                        ThreadLocalRandom.current().nextDouble(50.0, 200.0)
+                ).setScale(4, RoundingMode.HALF_UP),
                 user
         );
         musicCopyrightRepository.save(musicCopyright);
@@ -79,9 +83,9 @@ public class NftService {
 
         // 6. 초기 상태의 계약 레코드를 생성해준다.
         Contract contract = Contract.create(
-                0L, // 초기값 null 로 설정해야 함.
-                0, // 초기값 null 로 설정해야 함.
-                BigDecimal.valueOf(1.2), // 이자율 가치에 따라 다르게 설정
+                null,
+                null,
+                null,
                 EContractStatus.REGISTERED,
                 null,
                 null,
@@ -91,4 +95,5 @@ public class NftService {
 
         return null;
     }
+
 }

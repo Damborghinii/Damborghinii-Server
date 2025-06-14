@@ -84,7 +84,7 @@ public class MusicCopyright {
                 .registrationDoc(registrationDoc)
                 .imageUrl(imageUrl)
                 .ethPrice(ethPrice)
-                .wonPrice(ethPrice.longValue() * LoanConstants.EthereumMarketPrice)
+                .wonPrice(ethPrice.multiply(BigDecimal.valueOf(LoanConstants.EthereumMarketPrice)).longValue())
                 .owner(owner)
                 .build();
     }
