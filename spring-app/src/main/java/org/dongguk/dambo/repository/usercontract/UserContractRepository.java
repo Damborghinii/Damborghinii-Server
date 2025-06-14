@@ -1,5 +1,6 @@
 package org.dongguk.dambo.repository.usercontract;
 
+import org.dongguk.dambo.domain.entity.Contract;
 import org.dongguk.dambo.domain.entity.UserContract;
 import org.dongguk.dambo.domain.type.EContractRole;
 import org.dongguk.dambo.domain.type.EContractStatus;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserContractRepository extends JpaRepository<UserContract, Long> {
     @Query("""
@@ -51,6 +53,7 @@ public interface UserContractRepository extends JpaRepository<UserContract, Long
 
     @Query("""
     SELECT
+        rs.id as repaymentScheduleId,
         rs.repaymentAmount
         +
         CASE WHEN rs.lateFee IS NULL THEN 0 ELSE rs.lateFee END
@@ -124,4 +127,6 @@ public interface UserContractRepository extends JpaRepository<UserContract, Long
             ERepaymentStatus status,
             EContractRole role
     );
+
+    Optional<List<UserContract>> findByRoleAndContract(EContractRole role, Contract contract);
 }

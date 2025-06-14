@@ -1,6 +1,7 @@
 package org.dongguk.dambo.service.contract;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.dambo.constant.LoanConstants;
 import org.dongguk.dambo.domain.entity.*;
 import org.dongguk.dambo.domain.type.EContractRole;
 import org.dongguk.dambo.domain.type.EContractStatus;
@@ -46,6 +47,7 @@ public class ContractService {
                 null,
                 null,
                 repaymentCount,
+                LoanConstants.RepaymentStartCount,
                 EContractStatus.INVESTING,
                 currentUser,
                 currentContract

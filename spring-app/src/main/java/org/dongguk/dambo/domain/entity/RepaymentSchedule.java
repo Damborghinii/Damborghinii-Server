@@ -69,4 +69,9 @@ public class RepaymentSchedule {
                 .userContract(userContract)
                 .build();
     }
+
+    public void updateRepaymentStatusOnRepayment(ERepaymentStatus repaymentStatus) {
+        this.repaymentStatus = repaymentStatus;
+        this.settlementDate = LocalDate.now();
+    }
 }

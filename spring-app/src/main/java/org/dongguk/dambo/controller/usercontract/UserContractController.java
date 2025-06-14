@@ -1,6 +1,7 @@
 package org.dongguk.dambo.controller.usercontract;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.dambo.core.annotation.UserId;
 import org.dongguk.dambo.core.common.BaseResponse;
 import org.dongguk.dambo.dto.usercontract.response.ActiveContractCountResponse;
 import org.dongguk.dambo.dto.usercontract.response.ActiveContractListResponse;
@@ -17,7 +18,7 @@ public class UserContractController {
 
     @GetMapping("/active")
     public BaseResponse<ActiveContractListResponse> getActiveContracts(
-            @RequestHeader Long userId,
+            @UserId Long userId,
             @RequestParam String status,
             @RequestParam String role
     ) {
@@ -26,7 +27,7 @@ public class UserContractController {
 
     @GetMapping("/active/count")
     public BaseResponse<ActiveContractCountResponse> getActiveContractsCount(
-            @RequestHeader Long userId,
+            @UserId Long userId,
             @RequestParam String status,
             @RequestParam String role
     ) {
@@ -35,10 +36,18 @@ public class UserContractController {
 
     @GetMapping("/confirmed")
     public BaseResponse<SettlementManagementResponse> getSettlementManagement(
-            @RequestHeader Long userId,
+            @UserId Long userId,
             @RequestParam String status,
             @RequestParam String role
     ) {
         return BaseResponse.success(userContractService.getSettlementManagement(userId, status, role));
+    }
+
+    @PatchMapping("/{repaymentScheduleId}/repayment")
+    public BaseResponse<Void> updateRepaymentSchedule(
+            @UserId Long userId,
+            @PathVariable Long repaymentScheduleId
+    ) {
+        return BaseResponse.success(userContractService.updateRepaymentSchedule(userId, repaymentScheduleId));
     }
 }

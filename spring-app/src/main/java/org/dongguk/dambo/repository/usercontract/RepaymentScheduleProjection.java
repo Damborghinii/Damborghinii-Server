@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public interface RepaymentScheduleProjection {
+    Long getRepaymentScheduleId();
     Long getTotalRepaymentAmount();
     Long getRepaymentAmount();
     BigDecimal getInterestRate();

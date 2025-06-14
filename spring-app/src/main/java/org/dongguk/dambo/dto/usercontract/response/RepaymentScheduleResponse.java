@@ -6,6 +6,8 @@ import org.dongguk.dambo.repository.usercontract.RepaymentScheduleProjection;
 import java.math.BigDecimal;
 
 public record RepaymentScheduleResponse(
+        @JsonProperty("repaymentScheduleId")
+        Long repaymentScheduleId,
         @JsonProperty("totalRepaymentAmount")
         Long totalRepaymentAmount,
         @JsonProperty("repaymentAmount")
@@ -31,6 +33,7 @@ public record RepaymentScheduleResponse(
 ) {
         public static RepaymentScheduleResponse from(RepaymentScheduleProjection repaymentScheduleProjection) {
                 return new RepaymentScheduleResponse(
+                        repaymentScheduleProjection.getRepaymentScheduleId(),
                         repaymentScheduleProjection.getTotalRepaymentAmount(),
                         repaymentScheduleProjection.getRepaymentAmount(),
                         repaymentScheduleProjection.getInterestRate(),
