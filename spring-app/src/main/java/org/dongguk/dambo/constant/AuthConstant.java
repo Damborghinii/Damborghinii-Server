@@ -8,7 +8,7 @@ public class AuthConstant {
     public static final String[] AUTH_WHITELIST = {
             "/api/v1/auth/sign-up",
             "/api/v1/auth/login",
-            "/api/v1/auth/check-id",
+            "/api/v1/users/check-id",
             "/api/v1/contracts",
     };
     private AuthConstant() {
