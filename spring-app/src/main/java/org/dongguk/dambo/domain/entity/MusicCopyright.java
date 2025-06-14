@@ -88,4 +88,12 @@ public class MusicCopyright {
                 .owner(owner)
                 .build();
     }
+
+    public void updateRegistrationDoc(String registrationDoc) {
+        this.registrationDoc = registrationDoc;
+    }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }
