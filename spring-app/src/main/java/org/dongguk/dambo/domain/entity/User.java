@@ -2,6 +2,8 @@ package org.dongguk.dambo.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.dongguk.dambo.core.exception.CustomException;
+import org.dongguk.dambo.domain.exception.user.UserErrorCode;
 import org.dongguk.dambo.domain.type.EJob;
 
 import java.time.LocalDate;
@@ -65,5 +67,17 @@ public class User {
                 .phoneNumber(phoneNumber)
                 .walletAddr(walletAddr)
                 .build();
+    }
+
+    public void updateCashOnRepayment(Long repaymentAmount) {
+        if (this.cash < repaymentAmount) {
+            throw new CustomException(UserErrorCode.INSUFFICIENT_BALANCE);
+        }
+
+        this.cash -= repaymentAmount;
+    }
+
+    public void updateCashOnReceiveRepayment(Long repaymentAmount) {
+        this.cash += repaymentAmount;
     }
 }

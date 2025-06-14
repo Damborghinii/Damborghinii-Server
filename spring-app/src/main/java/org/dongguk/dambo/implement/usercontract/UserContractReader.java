@@ -1,6 +1,10 @@
 package org.dongguk.dambo.implement.usercontract;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.dambo.core.exception.CustomException;
+import org.dongguk.dambo.domain.entity.Contract;
+import org.dongguk.dambo.domain.entity.UserContract;
+import org.dongguk.dambo.domain.exception.usercontract.UserContractErrorCode;
 import org.dongguk.dambo.domain.type.EContractRole;
 import org.dongguk.dambo.domain.type.EContractStatus;
 import org.dongguk.dambo.domain.type.ERepaymentStatus;
@@ -68,5 +72,10 @@ public class UserContractReader {
                 .stream()
                 .map(RepaymentScheduleResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public List<UserContract> findUserContractByContractWithLender(Contract contract){
+        return userContractRepository.findByRoleAndContract(EContractRole.LENDER, contract)
+                .orElseThrow(() -> new CustomException(UserContractErrorCode.NOT_FOUND_USER_CONTRACT));
     }
 }

@@ -1,6 +1,7 @@
 package org.dongguk.dambo.controller.contract;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.dambo.core.annotation.UserId;
 import org.dongguk.dambo.core.common.BaseResponse;
 import org.dongguk.dambo.dto.contract.request.LoanCreateRequest;
 import org.dongguk.dambo.service.contract.ContractService;
@@ -14,7 +15,7 @@ public class ContractController {
 
     @PostMapping("contracts/{contractId}")
     public BaseResponse<Void> createContract(
-            @RequestHeader("user_id") Long userId,
+            @UserId Long userId,
             @PathVariable Long contractId,
             @RequestBody LoanCreateRequest loanCreateRequest
     ) {
