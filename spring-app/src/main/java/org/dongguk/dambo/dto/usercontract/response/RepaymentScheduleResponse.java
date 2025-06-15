@@ -24,6 +24,8 @@ public record RepaymentScheduleResponse(
         String settlementDate,
         @JsonProperty("relativeDays")
         String relativeDays,
+        @JsonProperty("nftImageUrl")
+        String nftImageUrl,
         @JsonProperty("nftName")
         String nftName,
         @JsonProperty("stake")
@@ -46,6 +48,7 @@ public record RepaymentScheduleResponse(
                                 repaymentScheduleProjection.getRelativeDays() >= 0 ?
                                         repaymentScheduleProjection.getRelativeDays() + "일 남았어요" :
                                         (-repaymentScheduleProjection.getRelativeDays()) + "일 초과됐어요",
+                        repaymentScheduleProjection.getNftImageUrl(),
                         repaymentScheduleProjection.getNftName(),
                         repaymentScheduleProjection.getStake(),
                         repaymentScheduleProjection.getEthPrice()

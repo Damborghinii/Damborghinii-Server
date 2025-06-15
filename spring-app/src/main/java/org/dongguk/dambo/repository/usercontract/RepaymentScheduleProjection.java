@@ -13,6 +13,7 @@ public interface RepaymentScheduleProjection {
     LocalDate getRepaymentDate();
     LocalDate getSettlementDate();
     Integer getRelativeDays();
+    String getNftImageUrl();
     String getNftName();
     Long getStake();
     BigDecimal getEthPrice();
