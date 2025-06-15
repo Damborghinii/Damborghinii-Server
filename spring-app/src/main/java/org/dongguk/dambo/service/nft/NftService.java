@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
@@ -43,8 +41,8 @@ public class NftService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> CustomException.type(UserErrorCode.NOT_FOUND_USER));
 
-        // 1. 외부 APi 사용하여 MusicCopyright ethPrice 구해준다.
-        //
+        // 1. 받은 ethPrice 값에서 적당히 파싱
+        BigDecimal ethPrice = new BigDecimal(nftCreateRequest.ethPrice().replace("ETH", "").trim());
 
         // 2. 임시적으로 MusicCopyright 만들어준다.
         MusicCopyright musicCopyright = MusicCopyright.create(
@@ -56,9 +54,7 @@ public class NftService {
                 nftCreateRequest.isRegistered(),
                 "",
                 "",
-                BigDecimal.valueOf(
-                        ThreadLocalRandom.current().nextDouble(50.0, 200.0)
-                ).setScale(4, RoundingMode.HALF_UP),
+                ethPrice,
                 user
         );
         musicCopyrightRepository.save(musicCopyright);

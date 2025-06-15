@@ -1,6 +1,7 @@
 package org.dongguk.dambo.service.musiccopyright;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.dambo.constant.LoanConstants;
 import org.dongguk.dambo.core.exception.CustomException;
 import org.dongguk.dambo.domain.entity.Contract;
 import org.dongguk.dambo.domain.entity.MusicCopyright;
@@ -9,7 +10,9 @@ import org.dongguk.dambo.domain.exception.contract.ContractErrorCode;
 import org.dongguk.dambo.domain.exception.musiccopyright.MusicCopyrightErrorCode;
 import org.dongguk.dambo.domain.exception.user.UserErrorCode;
 import org.dongguk.dambo.domain.type.EContractStatus;
+import org.dongguk.dambo.dto.musiccopyright.request.EvaluateCopyrightValueRequest;
 import org.dongguk.dambo.dto.musiccopyright.response.CopyrightDetailResponse;
+import org.dongguk.dambo.dto.musiccopyright.response.EvaluateCopyrightValueResponse;
 import org.dongguk.dambo.dto.musiccopyright.response.MyCopyrightResponse;
 import org.dongguk.dambo.dto.musiccopyright.response.MyCopyrightsResponse;
 import org.dongguk.dambo.repository.contract.ContractRepository;
@@ -17,9 +20,12 @@ import org.dongguk.dambo.repository.musiccopyright.MusicCopyrightRepository;
 import org.dongguk.dambo.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +82,21 @@ public class MusicCopyrightService {
                 .streamingUrls(copyright.getStreamingUrl())
                 .isRegistered(copyright.getIsRegistered() ? "저작권이 등록되어 있는 음원" : "저작권 미등록 음원")
                 .registrationDoc(copyright.getRegistrationDoc())
+                .build();
+    }
+
+    public EvaluateCopyrightValueResponse evaluateCopyright(EvaluateCopyrightValueRequest request) {
+        // request 이용해서 AI 돌리는 로직 필요
+
+        BigDecimal ethPrice = BigDecimal.valueOf(
+                ThreadLocalRandom.current().nextDouble(50.0, 200.0)
+        ).setScale(4, RoundingMode.HALF_UP);
+        Long wonPrice = ethPrice.multiply(BigDecimal.valueOf(LoanConstants.EthereumMarketPrice)).longValue();
+
+
+        return EvaluateCopyrightValueResponse.builder()
+                .ethPrice(ethPrice.toPlainString() + "ETH")
+                .wonPrice(NumberFormat.getInstance(Locale.KOREA).format(wonPrice) + "원")
                 .build();
     }
 }
