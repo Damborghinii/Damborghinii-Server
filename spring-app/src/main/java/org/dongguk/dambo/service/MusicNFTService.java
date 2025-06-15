@@ -5,15 +5,19 @@ import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 import org.dongguk.dambo.contract.MusicNFT;
 import org.dongguk.dambo.dto.MetadataMintRequest;
+import org.dongguk.dambo.dto.MintResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -43,7 +47,7 @@ public class MusicNFTService {
     /**
      * NFT 민팅 수행
      */
-    public String mintNFT(String recipient, String tokenURI) {
+    public MintResponse mintNFT(String recipient, String tokenURI) {
         try {
             Web3j web3j = Web3j.build(new HttpService(infuraUrl));
             Credentials credentials = Credentials.create(privateKey);
@@ -57,8 +61,16 @@ public class MusicNFTService {
                     contractAddress.trim(), web3j, credentials, new DefaultGasProvider()
             );
 
-            var transaction = contract.mintNFT(recipient, tokenURI).send();
-            return transaction.getTransactionHash();
+            TransactionReceipt receipt = contract.mintNFT(recipient, tokenURI).send();
+
+            List<MusicNFT.TransferEventResponse> events = MusicNFT.getTransferEvents(receipt);
+            if (events.isEmpty()) {
+                throw new RuntimeException("No Transfer event found.");
+            }
+
+            BigInteger tokenId = events.getFirst().tokenId;
+
+            return MintResponse.of(receipt.getTransactionHash(), tokenId.longValue());
 
         } catch (Exception e) {
             throw new RuntimeException("Minting failed: " + e.getMessage(), e);
@@ -71,12 +83,20 @@ public class MusicNFTService {
     public String uploadMetadataToIPFS(MetadataMintRequest request) {
         try {
             Map<String, Object> metadata = new HashMap<>();
-            metadata.put("name", request.getName());
-            metadata.put("description", request.getDescription());
-            metadata.put("image", request.getImage());
+            metadata.put("ethPrice", request.ethPrice());
+            metadata.put("name", request.name());
+            metadata.put("singer", request.singer());
+            metadata.put("composer", request.composer());
+            metadata.put("lyricist", request.lyricist());
+            metadata.put("streamingUrl", request.streamingUrl());
+            metadata.put("image", request.image());
 
             Map<String, Object> payload = new HashMap<>();
             payload.put("pinataContent", metadata);
+
+            Map<String, Object> pinataMetadata = new HashMap<>();
+            pinataMetadata.put("name", request.name());
+            payload.put("pinataMetadata", pinataMetadata);
 
             String jsonPayload = objectMapper.writeValueAsString(payload);
 

@@ -1,11 +1,26 @@
 package org.dongguk.dambo.dto;
 
-import lombok.Data;
+import java.math.BigDecimal;
 
-@Data
-public class MetadataMintRequest {
-    private String recipient;
-    private String name;
-    private String description;
-    private String image;
+public record MetadataMintRequest(
+        String recipient,
+        BigDecimal ethPrice,
+        String name,
+        String singer,
+        String composer,
+        String lyricist,
+        String streamingUrl,
+        String image
+) {
+    public static MetadataMintRequest of(
+            String recipient, BigDecimal ethPrice, String name,
+            String singer, String composer, String lyricist,
+            String streamingUrl, String image
+    ) {
+        return new MetadataMintRequest(
+                recipient, ethPrice, name,
+                singer, composer, lyricist,
+                streamingUrl, image
+        );
+    }
 }
