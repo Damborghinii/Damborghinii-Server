@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 public record LoanEvaluationResponse(
         CopyrightInfo copyright,
         LoanCondition loanCondition,
-        Long minimumLoanAmount,
-        Long maximumLoanAmount,
+        String minimumLoanAmount,
+        String maximumLoanAmount,
         BigDecimal interestCalculationRatio
 ) {
     public record CopyrightInfo(

@@ -3,6 +3,7 @@ package org.dongguk.dambo.controller.loan;
 import lombok.RequiredArgsConstructor;
 import org.dongguk.dambo.core.annotation.UserId;
 import org.dongguk.dambo.core.common.BaseResponse;
+import org.dongguk.dambo.dto.loan.LoanEvaluationCheckResponse;
 import org.dongguk.dambo.dto.loan.LoanEvaluationResponse;
 import org.dongguk.dambo.service.loan.LoanService;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class LoanController {
     }
 
     @GetMapping("/{contractId}/loans/check")
-    public BaseResponse<?> evaluateLoanCheck(
+    public BaseResponse<LoanEvaluationCheckResponse> evaluateLoanCheck(
             @UserId Long userId,
             @PathVariable Long contractId,
             @RequestParam Long amount,

@@ -20,6 +20,9 @@ public class InvestmentProgress {
     @Column(name = "progress", nullable = false, precision = 3, scale = 1)
     private BigDecimal progress;
 
+    @Column(name = "progress_amount", nullable = false)
+    private Long progressAmount;
+
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "contract_id", nullable = false, unique = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -28,6 +31,7 @@ public class InvestmentProgress {
     @Builder
     private InvestmentProgress(BigDecimal progress, Contract contract) {
         this.progress = progress;
+        this.progressAmount = 0L;
         this.contract = contract;
     }
 
