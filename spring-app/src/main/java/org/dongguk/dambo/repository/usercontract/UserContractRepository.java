@@ -1,12 +1,14 @@
 package org.dongguk.dambo.repository.usercontract;
 
 import org.dongguk.dambo.domain.entity.Contract;
+import org.dongguk.dambo.domain.entity.User;
 import org.dongguk.dambo.domain.entity.UserContract;
 import org.dongguk.dambo.domain.type.EContractRole;
 import org.dongguk.dambo.domain.type.EContractStatus;
 import org.dongguk.dambo.domain.type.ERepaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -127,5 +129,15 @@ public interface UserContractRepository extends JpaRepository<UserContract, Long
             EContractRole role
     );
 
+    @Query("""
+        SELECT uc.user
+        FROM UserContract uc
+        WHERE uc.contract.id = :contractId
+        AND uc.role = 'BORROWER'
+    """)
+    Optional<User> findBorrowerByContractId(@Param("contractId") Long contractId);
+
     Optional<List<UserContract>> findByRoleAndContract(EContractRole role, Contract contract);
+
+    List<UserContract> findAllByContractId(Long contractId);
 }

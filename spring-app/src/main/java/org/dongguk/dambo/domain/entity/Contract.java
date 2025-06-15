@@ -80,4 +80,16 @@ public class Contract {
         this.interestRate = interestRate;
         this.status = EContractStatus.INVESTING;
     }
+
+    public void updateStatus(EContractStatus status) {
+        this.status = status;
+    }
+
+    public void updateLoanStartDate(LocalDate loanStartDate) {
+        this.loanStartDate = loanStartDate;
+    }
+
+    public void updateLoanEndDate(LocalDate loanEndDate) {
+        this.loanEndDate = loanEndDate;
+    }
 }

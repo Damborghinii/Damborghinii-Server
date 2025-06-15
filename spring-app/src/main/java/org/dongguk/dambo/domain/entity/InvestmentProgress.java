@@ -17,7 +17,7 @@ public class InvestmentProgress {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "progress", nullable = false, precision = 3, scale = 1)
+    @Column(name = "progress", nullable = false, precision = 5, scale = 2)
     private BigDecimal progress;
 
     @Column(name = "progress_amount", nullable = false)
@@ -40,5 +40,13 @@ public class InvestmentProgress {
                 .progress(progress)
                 .contract(contract)
                 .build();
+    }
+
+    public void updateProgressAmount(Long updatedAmount) {
+        this.progressAmount = updatedAmount;
+    }
+
+    public void updateProgress(BigDecimal updatedProgress) {
+        this.progress = updatedProgress;
     }
 }
