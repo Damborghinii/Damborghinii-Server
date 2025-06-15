@@ -20,8 +20,8 @@ public record SettlementManagementResponse(
         ) {
                 return new SettlementManagementResponse(
                         cash,
-                        totalContracts,
-                        totalAmount,
+                        totalContracts == null ? 0 : totalContracts,
+                        totalAmount == null ? 0 : totalAmount,
                         repaymentScheduleListResponse
                 );
         }
