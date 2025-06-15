@@ -6,6 +6,7 @@ public interface ContractProjection {
     Long getContractId();
     Long getLoanAmount();
     BigDecimal getInterestRate();
+    String getCopyrightImageUrl();
     String getCopyrightName();
     BigDecimal getCopyrightEthPrice();
     BigDecimal getProgress();

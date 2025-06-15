@@ -19,6 +19,7 @@ public record ContractListResponse(
 
     @Builder
     public record CopyrightInfo(
+            String imageUrl,
             String name,
             String ethPrice
     ) { }

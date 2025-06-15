@@ -30,6 +30,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
           c.id AS contractId,
           c.loanAmount AS loanAmount,
           c.interestRate AS interestRate,
+          mc.imageUrl AS copyrightImageUrl,
           mc.title AS copyrightName,
           mc.ethPrice AS copyrightEthPrice,
           ip.progress AS progress

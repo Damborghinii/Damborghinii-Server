@@ -58,6 +58,7 @@ public class InvestService {
                         .interestRate("5%")
                         .copyright(
                                 ContractListResponse.CopyrightInfo.builder()
+                                        .imageUrl(contractProjection.getCopyrightImageUrl())
                                         .name(contractProjection.getCopyrightName())
                                         .ethPrice(contractProjection.getCopyrightEthPrice()
                                                 .stripTrailingZeros().toPlainString() + "ETH")
