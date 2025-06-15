@@ -64,12 +64,10 @@ public interface UserContractRepository extends JpaRepository<UserContract, Long
         rs.round as round,
         rs.repaymentDate as repaymentDate,
         rs.settlementDate as settlementDate,
-        DATEDIFF(
-            rs.repaymentDate,
-            CASE WHEN rs.settlementDate IS NULL THEN CURDATE()
-                 ELSE rs.settlementDate
-            END
-        ) as relativeDays,
+        CASE
+            WHEN rs.settlementDate IS NOT NULL THEN CAST(NULL AS INTEGER)
+            ELSE DATEDIFF(rs.repaymentDate, CURDATE())
+        END AS relativeDays,
         nf.name as nftName,
         uc.stake as stake,
         c.musicCopyright.ethPrice as ethPrice
