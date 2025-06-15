@@ -9,7 +9,7 @@ public record SettlementManagementResponse(
         Integer totalContracts,
         @JsonProperty("totalAmount")
         Long totalAmount,
-        @JsonProperty("repaymentSchedule")
+        @JsonProperty("repaymentSchedules")
         RepaymentScheduleListResponse repaymentScheduleListResponse
 ) {
         public static SettlementManagementResponse of(
