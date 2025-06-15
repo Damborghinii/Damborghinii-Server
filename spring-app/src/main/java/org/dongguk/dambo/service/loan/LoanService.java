@@ -68,8 +68,8 @@ public class LoanService {
         return new LoanEvaluationResponse(
                 copyrightDto,
                 loanConditionDto,
-                0L,
-                maxLoan,
+                "0",
+                NumberFormat.getInstance(Locale.KOREA).format(maxLoan),
                 interestCalculationRatio
         );
     }
