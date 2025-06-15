@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class MusicCopyrightController {
     private final MusicCopyrightService musicCopyrightService;
 
-    @GetMapping("/me/copyrigts")
+    @GetMapping("/me/copyrights")
     public BaseResponse<MyCopyrightsResponse> getMyNfts(
             @UserId Long userId,
             @RequestParam String status
@@ -24,7 +24,7 @@ public class MusicCopyrightController {
         return BaseResponse.success(musicCopyrightService.getMyNfts(userId, status));
     }
 
-    @GetMapping("/copyrigts/{copyrightId}")
+    @GetMapping("/copyrights/{copyrightId}")
     public BaseResponse<CopyrightDetailResponse> getCopyrightDetail(
             @UserId Long userId,
             @PathVariable Long copyrightId
