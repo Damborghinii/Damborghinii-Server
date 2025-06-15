@@ -2,34 +2,49 @@ package org.dongguk.dambo.service.invest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dongguk.dambo.core.annotation.UserId;
 import org.dongguk.dambo.core.exception.CustomException;
-import org.dongguk.dambo.domain.entity.Contract;
-import org.dongguk.dambo.domain.entity.InvestmentProgress;
-import org.dongguk.dambo.domain.entity.MusicCopyright;
-import org.dongguk.dambo.domain.entity.User;
+import org.dongguk.dambo.domain.entity.*;
 import org.dongguk.dambo.domain.exception.contract.ContractErrorCode;
 import org.dongguk.dambo.domain.exception.investementprogress.InvestmentProgressErrorCode;
+import org.dongguk.dambo.domain.exception.user.UserErrorCode;
+import org.dongguk.dambo.domain.exception.usercontract.UserContractErrorCode;
+import org.dongguk.dambo.domain.type.EContractRole;
+import org.dongguk.dambo.domain.type.EContractStatus;
+import org.dongguk.dambo.domain.type.ERepaymentStatus;
 import org.dongguk.dambo.dto.contract.response.ContractDetailResponse;
 import org.dongguk.dambo.dto.contract.response.ContractListResponse;
+import org.dongguk.dambo.dto.invest.request.InvestmentRequest;
 import org.dongguk.dambo.dto.invest.response.InvestmentInputMetaResponse;
 import org.dongguk.dambo.repository.contract.ContractProjection;
 import org.dongguk.dambo.repository.contract.ContractRepository;
 import org.dongguk.dambo.repository.investmentProgress.InvestmentProgressRepository;
+import org.dongguk.dambo.repository.repaymentschedule.RepaymentScheduleRepository;
+import org.dongguk.dambo.repository.user.UserRepository;
+import org.dongguk.dambo.repository.usercontract.UserContractRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class InvestService {
+    private final UserRepository userRepository;
     private final ContractRepository contractRepository;
     private final InvestmentProgressRepository investmentProgressRepository;
+    private final UserContractRepository userContractRepository;
+    private final RepaymentScheduleRepository repaymentScheduleRepository;
     private final NumberFormat nf = NumberFormat.getInstance(Locale.KOREA);
 
     @Transactional(readOnly = true)
@@ -137,6 +152,146 @@ public class InvestService {
                 .shareCalculationRatio(BigDecimal.valueOf(shareCalcRatio))
                 .interestCalculationRatio(BigDecimal.valueOf(interestCalcRatio))
                 .build();
+    }
+
+    @Transactional
+    public Void investContract(Long userId, Long contractId, InvestmentRequest request) {
+        // 1. 엔티티 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_FOUND_USER));
+
+        Contract contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> new CustomException(ContractErrorCode.NOT_FOUND_CONTRACT));
+
+        InvestmentProgress investmentProgress = investmentProgressRepository.findByContractId(contractId)
+                .orElseThrow(() -> new CustomException(InvestmentProgressErrorCode.NOT_FOUND_INVESTMENT_PROGRESS));
+
+        // 2. 투자 가능 여부 검증
+        Long investment = request.investment();
+        if (user.getCash() < investment) {
+            throw new CustomException(UserErrorCode.INSUFFICIENT_BALANCE);
+        }
+        if (contract.getStatus() != EContractStatus.INVESTING) {
+            throw new CustomException(ContractErrorCode.INVALID_CONTRACT_STATUS);
+        }
+        Long remainingAmount = contract.getLoanAmount() - investmentProgress.getProgressAmount();
+        if (investment > remainingAmount) {
+            throw new CustomException(ContractErrorCode.OVER_INVESTMENT_LIMIT);
+        }
+        if (Objects.equals(user.getId(), contract.getMusicCopyright().getId())) {
+            throw new RuntimeException("자기 자신에게 투자할 수 없습니다.");
+        }
+
+        // 3. UserContract 생성
+        BigDecimal stake = BigDecimal.valueOf(investment)
+                .divide(BigDecimal.valueOf(contract.getLoanAmount()), 8, RoundingMode.HALF_UP);
+
+        UserContract userContract = UserContract.create(
+                EContractRole.LENDER,
+                investment,
+                stake,
+                contract.getRepaymentCount(),
+                1,
+                EContractStatus.INVESTING,
+                user,
+                contract
+        );
+        userContractRepository.save(userContract);
+
+        // 4. InvestmentProgress 갱신
+        Long updatedAmount = investmentProgress.getProgressAmount() + investment;
+        investmentProgress.updateProgressAmount(updatedAmount);
+        BigDecimal progress = BigDecimal.valueOf(updatedAmount)
+                .divide(BigDecimal.valueOf(contract.getLoanAmount()), 3, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100));
+        investmentProgress.updateProgress(progress);
+
+        // 5. 투자 완료 여부 판단
+        if (updatedAmount.equals(contract.getLoanAmount())) {
+            // 5-1. 모든 UserContract 상태 변경
+            List<UserContract> userContracts = userContractRepository.findAllByContractId(contractId);
+            userContracts.forEach(uc -> uc.updateStatus(EContractStatus.COMPLETED));
+
+            // 5-2. 자산 이전 (만약 빌려주는 사람이 어디에 계약 걸어놓은 상태로 또 걸어놓으면 예외상황 발생함. 대처 필요)
+            userContracts.stream()
+                    .filter(uc -> uc.getRole() == EContractRole.LENDER)
+                    .forEach(uc -> {
+                        User lender = uc.getUser();
+                        lender.updateCashOnRepayment(uc.getInvestment());
+                    });
+            User borrower = userContractRepository.findBorrowerByContractId(contractId)
+                    .orElseThrow(() -> new CustomException(UserContractErrorCode.BORROWER_NOT_FOUND));
+            borrower.updateCashOnReceiveRepayment(contract.getLoanAmount());
+
+            // 5-3. 계약 상태 변경 및 날짜 설정
+            LocalDate startDate = LocalDate.now();
+            contract.updateStatus(EContractStatus.MATCHED);
+            contract.updateLoanStartDate(startDate);
+            contract.updateLoanEndDate(startDate.plusMonths(contract.getRepaymentCount()));
+
+            // 5-4. RepaymentSchedule 생성 (LENDER 기준)
+            userContracts.stream()
+                    .filter(uc -> uc.getRole() == EContractRole.LENDER)
+                    .forEach(uc -> {
+                        for (int round = 1; round <= contract.getRepaymentCount(); round++) {
+                            LocalDate repaymentDate = calculateRepaymentDate(startDate, round);
+                            BigDecimal totalInterest = contract.getInterestRate()
+                                    .multiply(BigDecimal.valueOf(uc.getInvestment()));
+                            long repaymentAmount = totalInterest
+                                    .add(BigDecimal.valueOf(uc.getInvestment()))
+                                    .divide(BigDecimal.valueOf(contract.getRepaymentCount()), RoundingMode.DOWN)
+                                    .longValue();
+                            long lateFee = Math.round(repaymentAmount * 0.05);
+
+                            RepaymentSchedule schedule = RepaymentSchedule.create(
+                                    round,
+                                    repaymentDate,
+                                    null,
+                                    repaymentAmount,
+                                    lateFee,
+                                    ERepaymentStatus.UPCOMING,
+                                    uc
+                            );
+                            repaymentScheduleRepository.save(schedule);
+                        }
+                    });
+
+            // 5-5. RepaymentSchedule 생성 (BORROWER 기준)
+            UserContract borrowerContract = userContracts.stream()
+                    .filter(uc -> uc.getRole() == EContractRole.BORROWER)
+                    .findFirst()
+                    .orElseThrow(() -> new CustomException(UserContractErrorCode.NOT_FOUND_USER_CONTRACT));
+
+            for (int round = 1; round <= contract.getRepaymentCount(); round++) {
+                LocalDate repaymentDate = calculateRepaymentDate(startDate, round);
+                long repaymentAmount = contract.getLoanAmount()
+                        + contract.getInterestRate()
+                        .multiply(BigDecimal.valueOf(contract.getLoanAmount()))
+                        .longValue();
+                repaymentAmount /= contract.getRepaymentCount();
+                long lateFee = Math.round(repaymentAmount * 0.05);
+
+                RepaymentSchedule borrowerSchedule = RepaymentSchedule.create(
+                        round,
+                        repaymentDate,
+                        null,
+                        repaymentAmount,
+                        lateFee,
+                        ERepaymentStatus.UPCOMING,
+                        borrowerContract
+                );
+                repaymentScheduleRepository.save(borrowerSchedule);
+            }
+        }
+
+        return null;
+    }
+
+    private LocalDate calculateRepaymentDate(LocalDate startDate, int round) {
+        LocalDate base = startDate.plusMonths(round - 1);
+        int dayOfMonth = startDate.getDayOfMonth();
+        int lastDayOfMonth = YearMonth.from(base).lengthOfMonth();
+        return base.withDayOfMonth(Math.min(dayOfMonth, lastDayOfMonth));
     }
 
 }

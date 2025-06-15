@@ -87,4 +87,8 @@ public class UserContract {
             return;
         round += 1;
     }
+
+    public void updateStatus(EContractStatus status) {
+        this.status = status;
+    }
 }
