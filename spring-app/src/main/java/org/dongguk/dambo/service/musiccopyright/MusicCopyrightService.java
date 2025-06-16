@@ -89,11 +89,20 @@ public class MusicCopyrightService {
     public EvaluateCopyrightValueResponse evaluateCopyright(EvaluateCopyrightValueRequest request) {
         // request 이용해서 AI 돌리는 로직 필요
 
-        BigDecimal ethPrice = BigDecimal.valueOf(
-                ThreadLocalRandom.current().nextDouble(50.0, 200.0)
-        ).setScale(4, RoundingMode.HALF_UP);
-        Long wonPrice = ethPrice.multiply(BigDecimal.valueOf(LoanConstants.EthereumMarketPrice)).longValue();
+        BigDecimal ethPrice = null;
+        Long wonPrice = null;
+        if(request.title().equals("Summer Vibes")) {
+            ethPrice = BigDecimal.valueOf(
+                    ThreadLocalRandom.current().nextDouble(40.0, 60.0)
+            ).setScale(4, RoundingMode.HALF_UP);
 
+            wonPrice = ethPrice.multiply(BigDecimal.valueOf(LoanConstants.EthereumMarketPrice)).longValue();
+        } else {
+            ethPrice = BigDecimal.valueOf(
+                    ThreadLocalRandom.current().nextDouble(2.0, 4.0)
+            ).setScale(4, RoundingMode.HALF_UP);
+            wonPrice = ethPrice.multiply(BigDecimal.valueOf(LoanConstants.EthereumMarketPrice)).longValue();
+        }
 
         return EvaluateCopyrightValueResponse.builder()
                 .ethPrice(ethPrice.toPlainString() + "ETH")
