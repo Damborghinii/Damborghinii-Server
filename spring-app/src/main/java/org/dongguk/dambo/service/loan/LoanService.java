@@ -31,11 +31,12 @@ public class LoanService {
     private final ContractRepository contractRepository;
 
     @Transactional(readOnly = true)
-    public LoanEvaluationResponse evaluateLoan(Long userId, Long copyrightId) {
+    public LoanEvaluationResponse evaluateLoan(Long userId, Long contractId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> CustomException.type(UserErrorCode.NOT_FOUND_USER));
-        MusicCopyright musicCopyright = musicCopyrightRepository.findById(copyrightId)
-                .orElseThrow(() -> CustomException.type(MusicCopyrightErrorCode.NOT_FOUND_MUSIC_COPYRIGHT));
+        Contract contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> CustomException.type(ContractErrorCode.NOT_FOUND_CONTRACT));
+        MusicCopyright musicCopyright = contract.getMusicCopyright();
 
         String ethPriceStr = musicCopyright.getEthPrice().stripTrailingZeros().toPlainString() + "ETH";
         String wonPriceStr = NumberFormat.getInstance(Locale.KOREA).format(musicCopyright.getWonPrice()) + "원";
