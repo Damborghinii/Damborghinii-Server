@@ -99,16 +99,16 @@ public class NftService {
 //        String ipfsurl = musicNFTService.uploadMetadataToIPFS(request);
 //        MintResponse mintResponse = musicNFTService.mintNFT(user.getWalletAddr(), ipfsurl);
 //
-//        // 5. 토큰 등록 이후 등록된 정보를 기반으로 Nft create
-//        Nft nft = Nft.create(
-//                nftCreateRequest.nftName(),
-//                user.getWalletAddr(),
-//                mintResponse.tokenId(),
-//                ipfsurl,
-//                mintResponse.txHash(),
-//                musicCopyright
-//        );
-//        nftRepository.save(nft);
+        // 5. 토큰 등록 이후 등록된 정보를 기반으로 Nft create
+        Nft nft = Nft.create(
+                nftCreateRequest.nftName(),
+                user.getWalletAddr(),
+                0L,
+                "ipfsurl",
+                "mintResponse.txHash()",
+                musicCopyright
+        );
+        nftRepository.save(nft);
 
         // 6. 초기 상태의 계약 레코드를 생성해준다.
         Contract contract = Contract.create(
