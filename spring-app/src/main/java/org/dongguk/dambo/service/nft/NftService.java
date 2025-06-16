@@ -1,6 +1,7 @@
 package org.dongguk.dambo.service.nft;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.dongguk.dambo.core.exception.CustomException;
 import org.dongguk.dambo.domain.entity.Contract;
 import org.dongguk.dambo.domain.entity.MusicCopyright;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NftService {
@@ -83,30 +85,30 @@ public class NftService {
             musicCopyright.updateRegistrationDoc(docUrl);
         }
 
-        // 4. 토큰 등록 로직 수행
-        MetadataMintRequest request = MetadataMintRequest.of(
-                user.getWalletAddr(),
-                musicCopyright.getEthPrice(),
-                musicCopyright.getTitle() ,
-                musicCopyright.getSinger(),
-                musicCopyright.getComposer(),
-                musicCopyright.getLyricist(),
-                musicCopyright.getStreamingUrl(),
-                musicCopyright.getImageUrl()
-        );
-        String ipfsurl = musicNFTService.uploadMetadataToIPFS(request);
-        MintResponse mintResponse = musicNFTService.mintNFT(user.getWalletAddr(), ipfsurl);
-
-        // 5. 토큰 등록 이후 등록된 정보를 기반으로 Nft create
-        Nft nft = Nft.create(
-                nftCreateRequest.nftName(),
-                user.getWalletAddr(),
-                mintResponse.tokenId(),
-                ipfsurl,
-                mintResponse.txHash(),
-                musicCopyright
-        );
-        nftRepository.save(nft);
+//        // 4. 토큰 등록 로직 수행
+//        MetadataMintRequest request = MetadataMintRequest.of(
+//                user.getWalletAddr(),
+//                musicCopyright.getEthPrice(),
+//                musicCopyright.getTitle() ,
+//                musicCopyright.getSinger(),
+//                musicCopyright.getComposer(),
+//                musicCopyright.getLyricist(),
+//                musicCopyright.getStreamingUrl(),
+//                musicCopyright.getImageUrl()
+//        );
+//        String ipfsurl = musicNFTService.uploadMetadataToIPFS(request);
+//        MintResponse mintResponse = musicNFTService.mintNFT(user.getWalletAddr(), ipfsurl);
+//
+//        // 5. 토큰 등록 이후 등록된 정보를 기반으로 Nft create
+//        Nft nft = Nft.create(
+//                nftCreateRequest.nftName(),
+//                user.getWalletAddr(),
+//                mintResponse.tokenId(),
+//                ipfsurl,
+//                mintResponse.txHash(),
+//                musicCopyright
+//        );
+//        nftRepository.save(nft);
 
         // 6. 초기 상태의 계약 레코드를 생성해준다.
         Contract contract = Contract.create(
