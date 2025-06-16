@@ -40,7 +40,7 @@ public class MusicCopyrightService {
 
         List<EContractStatus> statuses;
         if ("ALL".equalsIgnoreCase(status)) {
-            statuses = List.of(EContractStatus.REGISTERED, EContractStatus.INVESTING, EContractStatus.MATCHED);
+            statuses = List.of(EContractStatus.REGISTERED, EContractStatus.INVESTING);
         } else {
             statuses = List.of(EContractStatus.valueOf(status));
         }
