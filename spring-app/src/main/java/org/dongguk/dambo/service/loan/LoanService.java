@@ -42,7 +42,7 @@ public class LoanService {
         String wonPriceStr = NumberFormat.getInstance(Locale.KOREA).format(musicCopyright.getWonPrice()) + "원";
         var copyrightDto = new LoanEvaluationResponse.CopyrightInfo(
                 musicCopyright.getImageUrl(),
-                "레전드 nft",
+                musicCopyright.getTitle(),
                 "음원 NFT",
                 ethPriceStr,
                 wonPriceStr,
