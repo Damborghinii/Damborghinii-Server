@@ -17,7 +17,7 @@ public class NftController {
     @PostMapping("/nfts")
     public BaseResponse<Void> createNft(
             @UserId Long userId,
-            @RequestPart("registrationDoc") MultipartFile registrationDoc,
+            @RequestPart(value = "registrationDoc", required = false) MultipartFile registrationDoc,
             @RequestPart("image") MultipartFile image,
             @RequestPart("nftCreateRequest") NftCreateRequest nftCreateRequest
     ) {

@@ -63,9 +63,25 @@ public class NftService {
         );
         musicCopyrightRepository.save(musicCopyright);
 
-        // 3. registrationDoc & imageUrl 을 GCS 업로드 후 업데이트
-        musicCopyright.updateImageUrl(gcsClient.uploadImage(user.getId(), musicCopyright.getId(), image.getOriginalFilename(), image));
-        musicCopyright.updateRegistrationDoc(gcsClient.uploadFile(user.getId(), musicCopyright.getId(), registrationDoc.getOriginalFilename(), registrationDoc));
+        // 3-1. 이미지 업로드는 필수
+        String imageUrl = gcsClient.uploadImage(
+                user.getId(),
+                musicCopyright.getId(),
+                image.getOriginalFilename(),
+                image
+        );
+        musicCopyright.updateImageUrl(imageUrl);
+
+        // 3-2. registrationDoc 업로드는 선택
+        if (registrationDoc != null && !registrationDoc.isEmpty()) {
+            String docUrl = gcsClient.uploadFile(
+                    user.getId(),
+                    musicCopyright.getId(),
+                    registrationDoc.getOriginalFilename(),
+                    registrationDoc
+            );
+            musicCopyright.updateRegistrationDoc(docUrl);
+        }
 
         // 4. 토큰 등록 로직 수행
 //        MetadataMintRequest request = MetadataMintRequest.of(
