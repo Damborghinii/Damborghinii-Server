@@ -13,7 +13,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     Optional<Contract> findByIdAndStatus(Long id, EContractStatus status);
     Optional<Contract> findByMusicCopyright_Id(Long copyrightId);
     @Query("""
-        SELECT mc.id AS id, mc.imageUrl AS imageUrl, mc.title AS title,
+        SELECT mc.id AS id, c.id AS contractId, mc.imageUrl AS imageUrl, mc.title AS title,
                mc.ethPrice AS ethPrice, c.status AS status
         FROM Contract c
         JOIN c.musicCopyright mc

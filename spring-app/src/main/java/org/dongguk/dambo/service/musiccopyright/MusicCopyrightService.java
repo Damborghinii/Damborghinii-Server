@@ -49,6 +49,7 @@ public class MusicCopyrightService {
                 contractRepository.findAllByOwnerIdAndStatuses(userId, statuses).stream()
                         .map(proj -> MyCopyrightResponse.builder()
                                 .copyrightId(proj.getId())
+                                .contractId(proj.getContractId())
                                 .imageUrl(proj.getImageUrl())
                                 .title(proj.getTitle())
                                 .type("음원 NFT")
