@@ -2,6 +2,7 @@ package org.dongguk.dambo.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.dongguk.dambo.contract.MusicNFT;
 import org.dongguk.dambo.dto.MetadataMintRequest;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MusicNFTService {
@@ -49,30 +51,41 @@ public class MusicNFTService {
      */
     public MintResponse mintNFT(String recipient, String tokenURI) {
         try {
+            log.info("[NFT Minting] 시작 - recipient: {}, tokenURI: {}", recipient, tokenURI);
+
             Web3j web3j = Web3j.build(new HttpService(infuraUrl));
+            log.info("[NFT Minting] Web3j 연결 완료 - URL: {}", infuraUrl);
+
             Credentials credentials = Credentials.create(privateKey);
+            log.info("[NFT Minting] 지갑 Credentials 생성 완료");
 
             String cleanAddress = contractAddress.trim();
             if (!cleanAddress.startsWith("0x") || cleanAddress.length() != 42) {
+                log.error("[NFT Minting] Invalid contract address: {}", cleanAddress);
                 throw new IllegalArgumentException("Invalid contract address: " + cleanAddress);
             }
 
             MusicNFT contract = MusicNFT.load(
-                    contractAddress.trim(), web3j, credentials, new DefaultGasProvider()
+                    cleanAddress, web3j, credentials, new DefaultGasProvider()
             );
+            log.info("[NFT Minting] 스마트 컨트랙트 로드 완료 - address: {}", cleanAddress);
 
             TransactionReceipt receipt = contract.mintNFT(recipient, tokenURI).send();
+            log.info("[NFT Minting] 트랜잭션 성공 - hash: {}", receipt.getTransactionHash());
 
             List<MusicNFT.TransferEventResponse> events = MusicNFT.getTransferEvents(receipt);
             if (events.isEmpty()) {
+                log.warn("[NFT Minting] Transfer 이벤트가 존재하지 않음");
                 throw new RuntimeException("No Transfer event found.");
             }
 
             BigInteger tokenId = events.getFirst().tokenId;
+            log.info("[NFT Minting] 민팅된 토큰 ID: {}", tokenId);
 
             return MintResponse.of(receipt.getTransactionHash(), tokenId.longValue());
 
         } catch (Exception e) {
+            log.error("[NFT Minting] 실패 - error: {}", e.getMessage(), e);
             throw new RuntimeException("Minting failed: " + e.getMessage(), e);
         }
     }
