@@ -38,3 +38,4 @@ out/
 
 application.yml
 damborghinii-94dcd758945c.json
+src/main/resources/**
