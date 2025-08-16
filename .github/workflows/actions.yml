@@ -38,7 +38,7 @@ jobs:
         run: |
           mkdir -p spring-app/src/main/resources
           echo "${{ secrets.YML }}" > spring-app/src/main/resources/application.yml
-          echo "${{ secrets.GCP_JSON_B64 }}" | base64 -d > spring-app/src/main/resources/damborghinii-94dcd758945c.json
+          echo "${{ secrets.GCP_JSON_B64 }}" | base64 -d > spring-app/src/main/resources/dambo-469208-ab39badb695d.json
 
       - name: Build spring jar (wrapper)
         working-directory: spring-app
