@@ -13,6 +13,7 @@ public record ContractListResponse(
     public record ContractItem(
             Long contractId,
             String loanAmount,
+            Integer repaymentCount,
             String interestRate,
             CopyrightInfo copyright,
             String progress,

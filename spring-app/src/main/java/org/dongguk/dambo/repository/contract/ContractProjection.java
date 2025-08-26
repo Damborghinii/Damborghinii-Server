@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 public interface ContractProjection {
     Long getContractId();
     Long getLoanAmount();
+    Integer getRepaymentCount();
     BigDecimal getInterestRate();
     LocalDateTime getExpirationTime();
     String getCopyrightImageUrl();
