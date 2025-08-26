@@ -2,6 +2,7 @@ package org.dongguk.dambo.dto.contract.response;
 
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record ContractListResponse(
@@ -14,7 +15,8 @@ public record ContractListResponse(
             String loanAmount,
             String interestRate,
             CopyrightInfo copyright,
-            String progress
+            String progress,
+            String expirationTime
     ) { }
 
     @Builder

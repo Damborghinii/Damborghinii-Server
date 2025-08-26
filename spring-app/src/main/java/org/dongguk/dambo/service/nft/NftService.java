@@ -120,7 +120,7 @@ public class NftService {
         Nft nft = Nft.create(
                 nftCreateRequest.nftName(),
                 user.getWalletAddr(),
-                0L,
+                mintResponse.tokenId(),
                 ipfsurl,
                 mintResponse.txHash(),
                 musicCopyright

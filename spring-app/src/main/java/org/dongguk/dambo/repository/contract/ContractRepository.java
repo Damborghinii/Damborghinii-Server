@@ -30,6 +30,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
           c.id AS contractId,
           c.loanAmount AS loanAmount,
           c.interestRate AS interestRate,
+          c.expirationTime AS expirationTime,
           mc.imageUrl AS copyrightImageUrl,
           mc.title AS copyrightName,
           mc.ethPrice AS copyrightEthPrice,
@@ -40,6 +41,79 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
         WHERE c.status = 'INVESTING'
     """)
     List<ContractProjection> findAllWithCopyrightAndProgress();
+
+    @Query("""
+        SELECT
+          c.id AS contractId,
+          c.loanAmount AS loanAmount,
+          c.interestRate AS interestRate,
+          c.expirationTime AS expirationTime,
+          mc.imageUrl AS copyrightImageUrl,
+          mc.title AS copyrightName,
+          mc.ethPrice AS copyrightEthPrice,
+          ip.progress AS progress
+        FROM Contract c
+        JOIN c.musicCopyright mc
+        LEFT JOIN InvestmentProgress ip ON ip.contract = c
+        WHERE c.status = 'INVESTING'
+        ORDER BY interestRate DESC
+    """)
+    List<ContractProjection> findHighReturnWithCopyrightAndProgress();
+
+
+    @Query("""
+        SELECT
+          c.id AS contractId,
+          c.loanAmount AS loanAmount,
+          c.interestRate AS interestRate,
+          c.expirationTime AS expirationTime,
+          mc.imageUrl AS copyrightImageUrl,
+          mc.title AS copyrightName,
+          mc.ethPrice AS copyrightEthPrice,
+          ip.progress AS progress
+        FROM Contract c
+        JOIN c.musicCopyright mc
+        LEFT JOIN InvestmentProgress ip ON ip.contract = c
+        WHERE c.status = 'INVESTING'
+        ORDER BY interestRate ASC
+    """)
+    List<ContractProjection> findLowRiskWithCopyrightAndProgress();
+
+    @Query("""
+        SELECT
+          c.id AS contractId,
+          c.loanAmount AS loanAmount,
+          c.interestRate AS interestRate,
+          c.expirationTime AS expirationTime,
+          mc.imageUrl AS copyrightImageUrl,
+          mc.title AS copyrightName,
+          mc.ethPrice AS copyrightEthPrice,
+          ip.progress AS progress
+        FROM Contract c
+        JOIN c.musicCopyright mc
+        LEFT JOIN InvestmentProgress ip ON ip.contract = c
+        WHERE c.status = 'INVESTING'
+        ORDER BY c.repaymentCount DESC
+    """)
+    List<ContractProjection> findLongTermWithCopyrightAndProgress();
+
+    @Query("""
+        SELECT
+          c.id AS contractId,
+          c.loanAmount AS loanAmount,
+          c.interestRate AS interestRate,
+          c.expirationTime AS expirationTime,
+          mc.imageUrl AS copyrightImageUrl,
+          mc.title AS copyrightName,
+          mc.ethPrice AS copyrightEthPrice,
+          ip.progress AS progress
+        FROM Contract c
+        JOIN c.musicCopyright mc
+        LEFT JOIN InvestmentProgress ip ON ip.contract = c
+        WHERE c.status = 'INVESTING'
+        ORDER BY c.repaymentCount ASC
+    """)
+    List<ContractProjection> findShortTermWithCopyrightAndProgress();
 
     @Query("""
         SELECT c FROM Contract c
