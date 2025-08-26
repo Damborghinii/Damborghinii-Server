@@ -10,6 +10,8 @@ import org.dongguk.dambo.dto.MintResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.Keys;
+import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
@@ -59,7 +61,7 @@ public class MusicNFTService {
             Credentials credentials = Credentials.create(privateKey);
             log.info("[NFT Minting] 지갑 Credentials 생성 완료");
 
-            String cleanAddress = contractAddress.trim();
+            String cleanAddress = normalizeContractAddress(contractAddress);
             if (!cleanAddress.startsWith("0x") || cleanAddress.length() != 42) {
                 log.error("[NFT Minting] Invalid contract address: {}", cleanAddress);
                 throw new IllegalArgumentException("Invalid contract address: " + cleanAddress);
@@ -140,5 +142,27 @@ public class MusicNFTService {
         } catch (IOException e) {
             throw new RuntimeException("IPFS upload failed: " + e.getMessage(), e);
         }
+    }
+    private String normalizeContractAddress(String raw) {
+        if (raw == null) throw new IllegalArgumentException("Contract address is null");
+        String a = raw.trim();
+
+        // 십진수로 오염된 경우 복구
+        if (a.matches("\\d{20,}")) {
+            var bi  = new java.math.BigInteger(a); // decimal
+            String hex = bi.toString(16);          // to hex (no 0x)
+            if (hex.length() > 40) throw new IllegalArgumentException("Corrupted decimal too large: " + a);
+            if (hex.length() < 40) hex = "0".repeat(40 - hex.length()) + hex;
+            a = "0x" + hex;
+        }
+
+        // 0x 누락 시 보정
+        if (!a.startsWith("0x") && a.matches("[0-9a-fA-F]{40}")) a = "0x" + a;
+
+        // 최종 유효성 + 체크섬
+        if (!WalletUtils.isValidAddress(a)) {
+            throw new IllegalArgumentException("Invalid contract address (format): " + a);
+        }
+        return Keys.toChecksumAddress(a);
     }
 }
