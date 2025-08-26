@@ -29,6 +29,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
         SELECT
           c.id AS contractId,
           c.loanAmount AS loanAmount,
+          c.repaymentCount as repaymentCount,
           c.interestRate AS interestRate,
           c.expirationTime AS expirationTime,
           mc.imageUrl AS copyrightImageUrl,
@@ -46,6 +47,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
         SELECT
           c.id AS contractId,
           c.loanAmount AS loanAmount,
+          c.repaymentCount as repaymentCount,
           c.interestRate AS interestRate,
           c.expirationTime AS expirationTime,
           mc.imageUrl AS copyrightImageUrl,
@@ -65,6 +67,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
         SELECT
           c.id AS contractId,
           c.loanAmount AS loanAmount,
+          c.repaymentCount as repaymentCount,
           c.interestRate AS interestRate,
           c.expirationTime AS expirationTime,
           mc.imageUrl AS copyrightImageUrl,
@@ -83,6 +86,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
         SELECT
           c.id AS contractId,
           c.loanAmount AS loanAmount,
+          c.repaymentCount as repaymentCount,
           c.interestRate AS interestRate,
           c.expirationTime AS expirationTime,
           mc.imageUrl AS copyrightImageUrl,
@@ -101,6 +105,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
         SELECT
           c.id AS contractId,
           c.loanAmount AS loanAmount,
+          c.repaymentCount as repaymentCount,
           c.interestRate AS interestRate,
           c.expirationTime AS expirationTime,
           mc.imageUrl AS copyrightImageUrl,

@@ -68,6 +68,7 @@ public class InvestService {
                 .map(contractProjection -> ContractListResponse.ContractItem.builder()
                         .contractId(contractProjection.getContractId())
                         .loanAmount(nf.format(contractProjection.getLoanAmount()) + "원")
+                        .repaymentCount(contractProjection.getRepaymentCount())
                         .interestRate(contractProjection.getInterestRate().toString())
                         .copyright(
                                 ContractListResponse.CopyrightInfo.builder()
