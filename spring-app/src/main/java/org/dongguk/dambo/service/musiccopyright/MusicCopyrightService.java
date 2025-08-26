@@ -10,6 +10,8 @@ import org.dongguk.dambo.domain.exception.contract.ContractErrorCode;
 import org.dongguk.dambo.domain.exception.musiccopyright.MusicCopyrightErrorCode;
 import org.dongguk.dambo.domain.exception.user.UserErrorCode;
 import org.dongguk.dambo.domain.type.EContractStatus;
+import org.dongguk.dambo.dto.gemini.GeminiResponseDto;
+import org.dongguk.dambo.dto.gemini.MusicValuationRequestDto;
 import org.dongguk.dambo.dto.musiccopyright.request.EvaluateCopyrightValueRequest;
 import org.dongguk.dambo.dto.musiccopyright.response.CopyrightDetailResponse;
 import org.dongguk.dambo.dto.musiccopyright.response.EvaluateCopyrightValueResponse;
@@ -19,6 +21,7 @@ import org.dongguk.dambo.repository.contract.ContractRepository;
 import org.dongguk.dambo.repository.musiccopyright.MusicCopyrightRepository;
 import org.dongguk.dambo.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -33,6 +36,7 @@ public class MusicCopyrightService {
     private final UserRepository userRepository;
     private final MusicCopyrightRepository musicCopyrightRepository;
     private final ContractRepository contractRepository;
+    private final RestClient geminiRestClient;
 
     public MyCopyrightsResponse getMyNfts(Long userId, String status) {
         User user = userRepository.findById(userId)
@@ -87,22 +91,18 @@ public class MusicCopyrightService {
     }
 
     public EvaluateCopyrightValueResponse evaluateCopyright(EvaluateCopyrightValueRequest request) {
-        // request 이용해서 AI 돌리는 로직 필요
+
+        GeminiResponseDto response = geminiRestClient.post()
+                .body(MusicValuationRequestDto.from(request))
+                .retrieve()
+                .body(GeminiResponseDto.class);
+        String value = response.candidates().getFirst().content().parts().getFirst().text();
 
         BigDecimal ethPrice = null;
         Long wonPrice = null;
-        if(request.title().equals("Summer Vibes")) {
-            ethPrice = BigDecimal.valueOf(
-                    ThreadLocalRandom.current().nextDouble(40.0, 60.0)
-            ).setScale(4, RoundingMode.HALF_UP);
 
-            wonPrice = ethPrice.multiply(BigDecimal.valueOf(LoanConstants.EthereumMarketPrice)).longValue();
-        } else {
-            ethPrice = BigDecimal.valueOf(
-                    ThreadLocalRandom.current().nextDouble(2.0, 4.0)
-            ).setScale(4, RoundingMode.HALF_UP);
-            wonPrice = ethPrice.multiply(BigDecimal.valueOf(LoanConstants.EthereumMarketPrice)).longValue();
-        }
+        ethPrice = new BigDecimal(value.trim());
+        wonPrice = ethPrice.multiply(BigDecimal.valueOf(LoanConstants.EthereumMarketPrice)).longValue();
 
         return EvaluateCopyrightValueResponse.builder()
                 .ethPrice(ethPrice.toPlainString() + "ETH")
