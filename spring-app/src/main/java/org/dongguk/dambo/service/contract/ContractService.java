@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +41,7 @@ public class ContractService {
         BigDecimal interestRate = InterestRateUtil.getInterestRate(
                 currentContract.getMusicCopyright().getWonPrice()
         );
-        contractUpdater.updateContract(currentContract, loanAmount, repaymentCount, interestRate);
+        contractUpdater.updateContract(currentContract, loanAmount, repaymentCount, interestRate, LocalDateTime.now().plusDays(7));
 
         UserContract currentUserContract = UserContract.create(
                 EContractRole.BORROWER,

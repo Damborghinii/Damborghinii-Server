@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -18,7 +19,8 @@ public class ContractUpdater {
             Contract contract,
             Long loanAmount,
             Integer repaymentCount,
-            BigDecimal interestRate
+            BigDecimal interestRate,
+            LocalDateTime expirationTime
     ) {
         if (loanAmount <= 0
                 || loanAmount >= contract.getMusicCopyright().getWonPrice() * LoanConstants.LoanToValue
@@ -29,6 +31,6 @@ public class ContractUpdater {
             throw new CustomException(ContractErrorCode.INVALID_REPAYMENT_COUNT);
         }
 
-        contract.updateContractOnLoan(loanAmount, repaymentCount, interestRate);
+        contract.updateContractOnLoan(loanAmount, repaymentCount, interestRate, expirationTime);
     }
 }

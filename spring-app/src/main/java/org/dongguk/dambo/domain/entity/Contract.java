@@ -11,6 +11,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -40,6 +41,9 @@ public class Contract {
 
     @Column(name = "loan_end_date")
     private LocalDate loanEndDate;
+
+    @Column(name = "expiration_time")
+    private LocalDateTime expirationTime;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "copyright_id", nullable = false, unique = true)
@@ -73,12 +77,14 @@ public class Contract {
     public void updateContractOnLoan(
             Long loanAmount,
             Integer repaymentCount,
-            BigDecimal interestRate
+            BigDecimal interestRate,
+            LocalDateTime expirationTime
     ) {
         this.loanAmount = loanAmount;
         this.repaymentCount = repaymentCount;
         this.interestRate = interestRate;
         this.status = EContractStatus.INVESTING;
+        this.expirationTime = expirationTime;
     }
 
     public void updateStatus(EContractStatus status) {

@@ -12,6 +12,7 @@ import org.dongguk.dambo.domain.exception.usercontract.UserContractErrorCode;
 import org.dongguk.dambo.domain.type.EContractRole;
 import org.dongguk.dambo.domain.type.EContractStatus;
 import org.dongguk.dambo.domain.type.ERepaymentStatus;
+import org.dongguk.dambo.domain.type.ESearchFilter;
 import org.dongguk.dambo.dto.contract.response.ContractDetailResponse;
 import org.dongguk.dambo.dto.contract.response.ContractListResponse;
 import org.dongguk.dambo.dto.invest.request.InvestmentRequest;
@@ -48,14 +49,26 @@ public class InvestService {
     private final NumberFormat nf = NumberFormat.getInstance(Locale.KOREA);
 
     @Transactional(readOnly = true)
-    public ContractListResponse getAllContracts() {
-        List<ContractProjection> contractProjections = contractRepository.findAllWithCopyrightAndProgress();
+    public ContractListResponse getAllContracts(ESearchFilter searchFilter) {
+        List<ContractProjection> contractProjections;
+
+        if(searchFilter.equals(ESearchFilter.HIGH_RETURN))
+            contractProjections = contractRepository.findHighReturnWithCopyrightAndProgress();
+        else if(searchFilter.equals(ESearchFilter.LOW_RISK))
+            contractProjections = contractRepository.findLowRiskWithCopyrightAndProgress();
+        else if(searchFilter.equals(ESearchFilter.LONG_TERM))
+            contractProjections = contractRepository.findLongTermWithCopyrightAndProgress();
+        else if(searchFilter.equals(ESearchFilter.SHORT_TERM))
+            contractProjections = contractRepository.findShortTermWithCopyrightAndProgress();
+        else
+            contractProjections = contractRepository.findAllWithCopyrightAndProgress();
+
 
         List<ContractListResponse.ContractItem> items = contractProjections.stream()
                 .map(contractProjection -> ContractListResponse.ContractItem.builder()
                         .contractId(contractProjection.getContractId())
                         .loanAmount(nf.format(contractProjection.getLoanAmount()) + "원")
-                        .interestRate("5%")
+                        .interestRate(contractProjection.getInterestRate().toString())
                         .copyright(
                                 ContractListResponse.CopyrightInfo.builder()
                                         .imageUrl(contractProjection.getCopyrightImageUrl())
@@ -67,6 +80,7 @@ public class InvestService {
                         .progress(contractProjection.getProgress() == null
                                 ? "0"
                                 : contractProjection.getProgress().stripTrailingZeros().toPlainString() + "%")
+                        .expirationTime(contractProjection.getExpirationTime().toString())
                         .build()
                 ).toList();
 

@@ -3,6 +3,7 @@ package org.dongguk.dambo.controller.invest;
 import lombok.RequiredArgsConstructor;
 import org.dongguk.dambo.core.annotation.UserId;
 import org.dongguk.dambo.core.common.BaseResponse;
+import org.dongguk.dambo.domain.type.ESearchFilter;
 import org.dongguk.dambo.dto.contract.response.ContractDetailResponse;
 import org.dongguk.dambo.dto.contract.response.ContractListResponse;
 import org.dongguk.dambo.dto.invest.request.InvestmentRequest;
@@ -17,8 +18,10 @@ public class InvestController {
     private final InvestService investService;
 
     @GetMapping("")
-    public BaseResponse<ContractListResponse> getAllContracts() {
-        return BaseResponse.success(investService.getAllContracts());
+    public BaseResponse<ContractListResponse> getAllContracts(
+            @RequestParam ESearchFilter searchFilter
+    ) {
+        return BaseResponse.success(investService.getAllContracts(searchFilter));
     }
 
     @GetMapping("/{contractId}")
