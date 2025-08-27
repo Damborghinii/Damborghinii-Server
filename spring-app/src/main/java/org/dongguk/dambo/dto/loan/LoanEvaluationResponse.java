@@ -12,7 +12,6 @@ public record LoanEvaluationResponse(
     public record CopyrightInfo(
             String imageUrl,
             String title,
-            String type,
             String ethPrice,
             String wonPrice,
             String singers,
@@ -20,7 +19,8 @@ public record LoanEvaluationResponse(
             String lyricists,
             String streamingUrls,
             String isRegistered,
-            String registrationDoc
+            String registrationDoc,
+            String audioUrl
     ) {}
 
     public record LoanCondition(

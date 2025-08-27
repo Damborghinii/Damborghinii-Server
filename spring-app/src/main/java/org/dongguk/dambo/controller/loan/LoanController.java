@@ -5,6 +5,7 @@ import org.dongguk.dambo.core.annotation.UserId;
 import org.dongguk.dambo.core.common.BaseResponse;
 import org.dongguk.dambo.dto.loan.LoanEvaluationCheckResponse;
 import org.dongguk.dambo.dto.loan.LoanEvaluationResponse;
+import org.dongguk.dambo.dto.loan.LoanEvaluationResponseV2;
 import org.dongguk.dambo.service.loan.LoanService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,14 @@ public class LoanController {
             @PathVariable Long contractId
     ) {
         return BaseResponse.success(loanService.evaluateLoan(userId, contractId));
+    }
+
+    @GetMapping("/{contractId}/loans2")
+    public BaseResponse<LoanEvaluationResponseV2> evaluateLoanV2(
+            @UserId Long userId,
+            @PathVariable Long contractId
+    ) {
+        return BaseResponse.success(loanService.evaluateLoanV2(userId, contractId));
     }
 
     @GetMapping("/{contractId}/loans/check")
