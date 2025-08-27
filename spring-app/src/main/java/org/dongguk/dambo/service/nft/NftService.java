@@ -42,6 +42,7 @@ public class NftService {
             Long userId,
             MultipartFile registrationDoc,
             MultipartFile image,
+            MultipartFile audio,
             NftCreateRequest nftCreateRequest
     ) {
         log.info("[NFT 생성] 요청 시작 - userId: {}", userId);
@@ -65,6 +66,7 @@ public class NftService {
                 nftCreateRequest.lyricists().getFirst(),
                 nftCreateRequest.streamingUrls().getFirst(),
                 nftCreateRequest.isRegistered(),
+                "",
                 "",
                 "",
                 ethPrice,
@@ -96,6 +98,16 @@ public class NftService {
         } else {
             log.info("[NFT 생성] 등록 문서 없음 - 스킵");
         }
+
+        // 3-3. 오비오 업로드
+        String audioUrl = gcsClient.uploadAudio(
+                user.getId(),
+                musicCopyright.getId(),
+                audio.getOriginalFilename(),
+                audio
+        );
+        musicCopyright.updateAudioUrl(audioUrl);
+        log.info("[NFT 생성] 오디오 업로드 완료 - url: {}", audioUrl);
 
         // 4. 토큰 등록 로직 수행
         MetadataMintRequest request = MetadataMintRequest.of(

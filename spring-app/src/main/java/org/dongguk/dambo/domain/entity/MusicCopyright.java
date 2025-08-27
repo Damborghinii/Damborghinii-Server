@@ -42,6 +42,9 @@ public class MusicCopyright {
     @Column(name = "image_url", nullable = false, length = 800)
     private String imageUrl;
 
+    @Column(name = "audio_url", nullable = false, length = 800)
+    private String audioUrl;
+
     @Column(name = "eth_price", nullable = false, precision = 8, scale = 4)
     private BigDecimal ethPrice;
 
@@ -57,7 +60,7 @@ public class MusicCopyright {
     @Builder
     private MusicCopyright(String title, String singer, String composer, String lyricist,
                            String streamingUrl, Boolean isRegistered, String registrationDoc,
-                           String imageUrl, BigDecimal ethPrice, Long wonPrice, User owner) {
+                           String imageUrl, String audioUrl, BigDecimal ethPrice, Long wonPrice, User owner) {
         this.title = title;
         this.singer = singer;
         this.composer = composer;
@@ -66,6 +69,7 @@ public class MusicCopyright {
         this.isRegistered = isRegistered;
         this.registrationDoc = registrationDoc;
         this.imageUrl = imageUrl;
+        this.audioUrl = audioUrl;
         this.ethPrice = ethPrice;
         this.wonPrice = wonPrice;
         this.owner = owner;
@@ -73,7 +77,7 @@ public class MusicCopyright {
 
     public static MusicCopyright create(String title, String singer, String composer, String lyricist,
                                         String streamingUrl, Boolean isRegistered, String registrationDoc,
-                                        String imageUrl, BigDecimal ethPrice, User owner) {
+                                        String imageUrl, String audioUrl, BigDecimal ethPrice, User owner) {
         return MusicCopyright.builder()
                 .title(title)
                 .singer(singer)
@@ -83,6 +87,7 @@ public class MusicCopyright {
                 .isRegistered(isRegistered)
                 .registrationDoc(registrationDoc)
                 .imageUrl(imageUrl)
+                .audioUrl(audioUrl)
                 .ethPrice(ethPrice)
                 .wonPrice(ethPrice.multiply(BigDecimal.valueOf(LoanConstants.EthereumMarketPrice)).longValue())
                 .owner(owner)
@@ -95,5 +100,9 @@ public class MusicCopyright {
 
     public void updateImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void updateAudioUrl(String audioUrl) {
+        this.audioUrl = audioUrl;
     }
 }

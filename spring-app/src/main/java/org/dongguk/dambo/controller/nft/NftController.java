@@ -19,8 +19,9 @@ public class NftController {
             @UserId Long userId,
             @RequestPart(value = "registrationDoc", required = false) MultipartFile registrationDoc,
             @RequestPart("image") MultipartFile image,
+            @RequestPart("audio") MultipartFile audio,
             @RequestPart("nftCreateRequest") NftCreateRequest nftCreateRequest
     ) {
-        return BaseResponse.success(nftService.createNft(userId, registrationDoc, image, nftCreateRequest));
+        return BaseResponse.success(nftService.createNft(userId, registrationDoc, image, audio, nftCreateRequest));
     }
 }

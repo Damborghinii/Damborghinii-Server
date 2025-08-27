@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class GcsClient {
     private static final String IMAGE_DIR = "image";
     private static final String FILE_DIR = "file";
+    private static final String AUDIO_DIR = "audio";
     @Value("${cloud.storage.bucket}")
     private String BUCKET_NAME;
     private final Storage gcsStorage;
@@ -22,6 +25,10 @@ public class GcsClient {
 
     public String uploadFile(Long userId, Long copyrightId, String fileName, MultipartFile file) {
         return upload(userId, copyrightId, FILE_DIR, fileName, file);
+    }
+
+    public String uploadAudio(Long userId, Long copyrightId, String audioName, MultipartFile file) {
+        return uploadAudio(userId, copyrightId, AUDIO_DIR, audioName, file);
     }
 
     public void deleteByUrl(String url) {
@@ -39,6 +46,21 @@ public class GcsClient {
             String objectPath = String.format("user%d/copyright%d/%s/%s", userId, copyrightId, typeDir, objectName);
             BlobInfo blobInfo = BlobInfo.newBuilder(BUCKET_NAME, objectPath)
                     .setContentType(file.getContentType())
+                    .build();
+            gcsStorage.create(blobInfo, bytes);
+
+            return String.format("https://storage.googleapis.com/%s/%s", BUCKET_NAME, objectPath);
+        } catch (Exception e) {
+            throw new RuntimeException("GCS 파일 업로드 실패", e);
+        }
+    }
+
+    private String uploadAudio(Long userId, Long copyrightId, String typeDir, String audioName, MultipartFile audio) {
+        try {
+            byte[] bytes = audio.getBytes();
+            String objectPath = String.format("user%d/copyright%d/%s/%s", userId, copyrightId, typeDir, audioName);
+            BlobInfo blobInfo = BlobInfo.newBuilder(BUCKET_NAME, objectPath)
+                    .setContentType("audio/mpeg")
                     .build();
             gcsStorage.create(blobInfo, bytes);
 
