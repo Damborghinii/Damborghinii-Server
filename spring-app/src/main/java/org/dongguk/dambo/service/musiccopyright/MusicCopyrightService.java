@@ -68,6 +68,36 @@ public class MusicCopyrightService {
         return new MyCopyrightsResponse(myCopyrightResponses);
     }
 
+    public MyCopyrightsResponse getInvestNfts(Long userId, String status) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> CustomException.type(UserErrorCode.NOT_FOUND_USER));
+
+        List<EContractStatus> statuses;
+        if ("ALL".equalsIgnoreCase(status)) {
+            statuses = List.of(EContractStatus.INVESTING, EContractStatus.COMPLETED);
+        } else {
+            statuses = List.of(EContractStatus.valueOf(status));
+        }
+
+        List<MyCopyrightResponse> myCopyrightResponses =
+                contractRepository.findAllByUserIdAndStatuses(userId, statuses).stream()
+                        .map(proj -> MyCopyrightResponse.builder()
+                                .copyrightId(proj.getId())
+                                .contractId(proj.getContractId())
+                                .imageUrl(proj.getImageUrl())
+                                .title(proj.getTitle())
+                                .type("음원 NFT")
+                                .ethPrice(proj.getEthPrice().toPlainString() + "ETH")
+                                .status(proj.getStatus().name())
+                                .progress(proj.getProgress())
+                                .repaymentCount(proj.getRepaymentCount())
+                                .rouund(proj.getRound())
+                                .build()
+                        ).toList();
+
+        return new MyCopyrightsResponse(myCopyrightResponses);
+    }
+
     public CopyrightDetailResponse getCopyrightDetail(Long copyrightId) {
         MusicCopyright copyright = musicCopyrightRepository.findById(copyrightId)
                 .orElseThrow(() -> CustomException.type(MusicCopyrightErrorCode.NOT_FOUND_MUSIC_COPYRIGHT));

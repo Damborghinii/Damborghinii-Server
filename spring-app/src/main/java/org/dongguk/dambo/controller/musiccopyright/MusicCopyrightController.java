@@ -24,6 +24,14 @@ public class MusicCopyrightController {
         return BaseResponse.success(musicCopyrightService.getMyNfts(userId, status));
     }
 
+    @GetMapping("/me/invest/copyrights")
+    public BaseResponse<MyCopyrightsResponse> getInvestNfts(
+            @UserId Long userId,
+            @RequestParam String status
+    ) {
+        return BaseResponse.success(musicCopyrightService.getInvestNfts(userId, status));
+    }
+
     @GetMapping("/copyrights/{copyrightId}")
     public BaseResponse<CopyrightDetailResponse> getCopyrightDetail(
             @UserId Long userId,

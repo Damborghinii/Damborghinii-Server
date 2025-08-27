@@ -41,6 +41,31 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     @Query("""
         SELECT
+            mc.id            AS id,
+            c.id             AS contractId,
+            mc.imageUrl      AS imageUrl,
+            mc.title         AS title,
+            mc.ethPrice      AS ethPrice,
+            c.status         AS status,
+            ip.progress      AS progress,
+            c.repaymentCount AS repaymentCount,
+            uc.round         AS round
+        FROM UserContract uc
+        JOIN uc.contract c
+        JOIN c.musicCopyright mc
+        LEFT JOIN InvestmentProgress ip
+               ON ip.contract = c
+        WHERE uc.user.id = :userId
+          AND uc.role = org.dongguk.dambo.domain.type.EContractRole.LENDER
+          AND uc.status IN :statuses
+    """)
+    List<CopyrightSummaryProjection> findAllByUserIdAndStatuses(
+            @Param("userId") Long userId,
+            @Param("statuses") List<EContractStatus> statuses
+    );
+
+    @Query("""
+        SELECT
           c.id AS contractId,
           c.loanAmount AS loanAmount,
           c.repaymentCount as repaymentCount,

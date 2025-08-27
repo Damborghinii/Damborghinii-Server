@@ -241,7 +241,7 @@ public class InvestService {
 
             // 5-3. 계약 상태 변경 및 날짜 설정
             LocalDate startDate = LocalDate.now();
-            contract.updateStatus(EContractStatus.MATCHED);
+            contract.updateStatus(EContractStatus.COMPLETED);
             contract.updateLoanStartDate(startDate);
             contract.updateLoanEndDate(startDate.plusMonths(contract.getRepaymentCount()));
 
