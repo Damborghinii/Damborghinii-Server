@@ -12,11 +12,25 @@ import java.util.Optional;
 public interface ContractRepository extends JpaRepository<Contract, Long> {
     Optional<Contract> findByIdAndStatus(Long id, EContractStatus status);
     Optional<Contract> findByMusicCopyright_Id(Long copyrightId);
+
     @Query("""
-        SELECT mc.id AS id, c.id AS contractId, mc.imageUrl AS imageUrl, mc.title AS title,
-               mc.ethPrice AS ethPrice, c.status AS status
+        SELECT
+            mc.id            AS id,
+            c.id             AS contractId,
+            mc.imageUrl      AS imageUrl,
+            mc.title         AS title,
+            mc.ethPrice      AS ethPrice,
+            c.status         AS status,
+            ip.progress      AS progress,
+            c.repaymentCount AS repaymentCount,
+            uc.round         AS round
         FROM Contract c
         JOIN c.musicCopyright mc
+        LEFT JOIN UserContract uc
+               ON uc.contract = c
+              AND uc.user.id = :ownerId
+        LEFT JOIN InvestmentProgress ip
+               ON ip.contract = c
         WHERE mc.owner.id = :ownerId
           AND c.status IN :statuses
     """)

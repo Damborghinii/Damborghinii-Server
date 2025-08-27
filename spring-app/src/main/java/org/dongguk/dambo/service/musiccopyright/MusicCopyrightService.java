@@ -44,7 +44,7 @@ public class MusicCopyrightService {
 
         List<EContractStatus> statuses;
         if ("ALL".equalsIgnoreCase(status)) {
-            statuses = List.of(EContractStatus.REGISTERED, EContractStatus.INVESTING);
+            statuses = List.of(EContractStatus.REGISTERED, EContractStatus.INVESTING, EContractStatus.COMPLETED);
         } else {
             statuses = List.of(EContractStatus.valueOf(status));
         }
@@ -59,6 +59,9 @@ public class MusicCopyrightService {
                                 .type("음원 NFT")
                                 .ethPrice(proj.getEthPrice().toPlainString() + "ETH")
                                 .status(proj.getStatus().name())
+                                .progress(proj.getProgress())
+                                .repaymentCount(proj.getRepaymentCount())
+                                .rouund(proj.getRound())
                                 .build()
                         ).toList();
 

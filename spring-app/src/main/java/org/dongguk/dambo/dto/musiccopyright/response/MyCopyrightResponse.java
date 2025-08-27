@@ -2,6 +2,8 @@ package org.dongguk.dambo.dto.musiccopyright.response;
 
 import lombok.Builder;
 
+import java.math.BigDecimal;
+
 @Builder
 public record MyCopyrightResponse(
         Long copyrightId,
@@ -10,6 +12,10 @@ public record MyCopyrightResponse(
         String title,
         String type,
         String ethPrice,
-        String status
+        String status,
+        BigDecimal progress,
+        Integer repaymentCount,
+        Integer rouund
+
 ) {
 }

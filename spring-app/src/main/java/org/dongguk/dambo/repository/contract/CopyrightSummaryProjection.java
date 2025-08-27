@@ -11,4 +11,7 @@ public interface CopyrightSummaryProjection {
     String getTitle();
     BigDecimal getEthPrice();
     EContractStatus getStatus();
+    BigDecimal getProgress();
+    Integer getRepaymentCount();
+    Integer getRound();
 }
