@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record CopyrightDetailResponse(
         Long copyrightId,
+        Long contractId,
         String status,
         String imageUrl,
         String title,

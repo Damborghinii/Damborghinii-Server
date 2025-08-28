@@ -108,6 +108,7 @@ public class MusicCopyrightService {
 
         return CopyrightDetailResponse.builder()
                 .copyrightId(copyright.getId())
+                .contractId(contract.getId())
                 .status(contract.getStatus().name())
                 .imageUrl(copyright.getImageUrl())
                 .title(copyright.getTitle())
