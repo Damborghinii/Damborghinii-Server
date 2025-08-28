@@ -15,7 +15,7 @@ public class Nft {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = "name", length = 100)
     private String name;
 
     @Column(name = "wallet_addr", nullable = false, length = 500)
