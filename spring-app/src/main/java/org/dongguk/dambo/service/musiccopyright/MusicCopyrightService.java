@@ -61,7 +61,7 @@ public class MusicCopyrightService {
                                 .status(proj.getStatus().name())
                                 .progress(proj.getProgress())
                                 .repaymentCount(proj.getRepaymentCount())
-                                .rouund(proj.getRound())
+                                .round(proj.getRound())
                                 .build()
                         ).toList();
 
@@ -91,7 +91,7 @@ public class MusicCopyrightService {
                                 .status(proj.getStatus().name())
                                 .progress(proj.getProgress())
                                 .repaymentCount(proj.getRepaymentCount())
-                                .rouund(proj.getRound())
+                                .round(proj.getRound())
                                 .build()
                         ).toList();
 

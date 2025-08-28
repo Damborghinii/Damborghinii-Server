@@ -15,7 +15,7 @@ public record MyCopyrightResponse(
         String status,
         BigDecimal progress,
         Integer repaymentCount,
-        Integer rouund
+        Integer round
 
 ) {
 }
