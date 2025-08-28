@@ -8,6 +8,7 @@ public record CopyrightDetailResponse(
         Long contractId,
         String status,
         String imageUrl,
+        String audioUrl,
         String title,
         String type,
         String ethPrice,

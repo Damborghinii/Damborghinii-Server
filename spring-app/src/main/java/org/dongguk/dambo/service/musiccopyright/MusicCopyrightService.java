@@ -111,6 +111,7 @@ public class MusicCopyrightService {
                 .contractId(contract.getId())
                 .status(contract.getStatus().name())
                 .imageUrl(copyright.getImageUrl())
+                .audioUrl(copyright.getAudioUrl())
                 .title(copyright.getTitle())
                 .type("음원 NFT")
                 .ethPrice(copyright.getEthPrice().toPlainString() + "ETH")
