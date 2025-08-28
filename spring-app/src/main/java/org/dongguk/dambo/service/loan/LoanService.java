@@ -8,6 +8,7 @@ import org.dongguk.dambo.domain.entity.User;
 import org.dongguk.dambo.domain.exception.contract.ContractErrorCode;
 import org.dongguk.dambo.domain.exception.user.UserErrorCode;
 import org.dongguk.dambo.dto.loan.LoanEvaluationCheckResponse;
+import org.dongguk.dambo.dto.loan.LoanEvaluationConclusionResponse;
 import org.dongguk.dambo.dto.loan.LoanEvaluationResponse;
 import org.dongguk.dambo.dto.loan.LoanEvaluationResponseV2;
 import org.dongguk.dambo.repository.contract.ContractRepository;
@@ -20,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 @Service
@@ -155,4 +159,68 @@ public class LoanService {
 
         return new LoanEvaluationCheckResponse(loanCond, copyInfo);
     }
+
+    @Transactional(readOnly = true)
+    public LoanEvaluationConclusionResponse evaluateLoanConclusion(
+            Long userId,
+            Long contractId,
+            Long amount,
+            Long count
+    ) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> CustomException.type(UserErrorCode.NOT_FOUND_USER));
+        Contract contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> CustomException.type(ContractErrorCode.NOT_FOUND_CONTRACT));
+        MusicCopyright musicCopyright = contract.getMusicCopyright();
+        BigDecimal interestRate = InterestRateUtil.getInterestRate(musicCopyright.getWonPrice());
+        BigDecimal monthlyInterest = BigDecimal.valueOf(amount)
+                .multiply(interestRate)
+                .divide(BigDecimal.valueOf(12), 0, RoundingMode.HALF_UP);
+
+        NumberFormat nf = NumberFormat.getInstance(Locale.KOREA);
+        String loanAmountStr = nf.format(amount) + "원";
+        String monthlyIntStr = nf.format(monthlyInterest) + "원";
+        String interestRateStr = interestRate
+                .multiply(BigDecimal.valueOf(100))
+                .stripTrailingZeros()
+                .toPlainString() + "%";
+        String loanPeriodStr = count + "개월";
+        String overdueRateStr = "5%";
+
+        LoanEvaluationConclusionResponse.LoanCondition loanCondition =
+                new LoanEvaluationConclusionResponse.LoanCondition(
+                        "만기상환방식",
+                        loanAmountStr,
+                        loanPeriodStr,
+                        interestRateStr,
+                        monthlyIntStr,
+                        overdueRateStr
+                );
+
+        String wonPriceStr = nf.format(musicCopyright.getWonPrice()) + "원";
+        String isRegisteredDesc = (musicCopyright.getIsRegistered())
+                ? "저작권이 등록되어 있는 음원"
+                : "저작권 미등록 음원";
+
+        LoanEvaluationConclusionResponse.CopyrightInfo copyright =
+                new LoanEvaluationConclusionResponse.CopyrightInfo(
+                        musicCopyright.getTitle(),
+                        musicCopyright.getSinger(),
+                        isRegisteredDesc,
+                        wonPriceStr,
+                        musicCopyright.getStreamingUrl()
+                );
+
+        DateTimeFormatter krFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일")
+                .withLocale(Locale.KOREA);
+        String creationDateStr = LocalDate.now(ZoneId.of("Asia/Seoul")).format(krFormatter);
+
+        return new LoanEvaluationConclusionResponse(
+                copyright,
+                loanCondition,
+                creationDateStr
+        );
+    }
+
 }

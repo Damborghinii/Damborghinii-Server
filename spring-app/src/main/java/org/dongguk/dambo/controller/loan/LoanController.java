@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.dongguk.dambo.core.annotation.UserId;
 import org.dongguk.dambo.core.common.BaseResponse;
 import org.dongguk.dambo.dto.loan.LoanEvaluationCheckResponse;
+import org.dongguk.dambo.dto.loan.LoanEvaluationConclusionResponse;
 import org.dongguk.dambo.dto.loan.LoanEvaluationResponse;
 import org.dongguk.dambo.dto.loan.LoanEvaluationResponseV2;
 import org.dongguk.dambo.service.loan.LoanService;
@@ -39,5 +40,15 @@ public class LoanController {
             @RequestParam Long count
     ) {
         return BaseResponse.success(loanService.evaluateLoanCheck(userId, contractId, amount, count));
+    }
+
+    @GetMapping("/{contractId}/loans/conclusion")
+    public BaseResponse<LoanEvaluationConclusionResponse> evaluateLoanConclusion(
+            @UserId Long userId,
+            @PathVariable Long contractId,
+            @RequestParam Long amount,
+            @RequestParam Long count
+    ) {
+        return BaseResponse.success(loanService.evaluateLoanConclusion(userId, contractId, amount, count));
     }
 }
