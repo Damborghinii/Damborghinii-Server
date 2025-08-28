@@ -36,8 +36,7 @@ public class Nft {
     private MusicCopyright musicCopyright;
 
     @Builder
-    private Nft(String name, String walletAddr, Long tokenId, String ipfsUrl, String txHash, MusicCopyright musicCopyright) {
-        this.name = name;
+    private Nft(String walletAddr, Long tokenId, String ipfsUrl, String txHash, MusicCopyright musicCopyright) {
         this.walletAddr = walletAddr;
         this.tokenId = tokenId;
         this.ipfsUrl = ipfsUrl;
@@ -45,9 +44,8 @@ public class Nft {
         this.musicCopyright = musicCopyright;
     }
 
-    public static Nft create(String name, String walletAddr, Long tokenId, String ipfsUrl, String txHash, MusicCopyright copyright) {
+    public static Nft create(String walletAddr, Long tokenId, String ipfsUrl, String txHash, MusicCopyright copyright) {
         return Nft.builder()
-                .name(name)
                 .walletAddr(walletAddr)
                 .tokenId(tokenId)
                 .ipfsUrl(ipfsUrl)

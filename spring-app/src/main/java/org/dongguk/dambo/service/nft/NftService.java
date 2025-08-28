@@ -130,7 +130,6 @@ public class NftService {
 
         // 5. 토큰 등록 이후 등록된 정보를 기반으로 Nft create
         Nft nft = Nft.create(
-                nftCreateRequest.nftName(),
                 user.getWalletAddr(),
                 mintResponse.tokenId(),
                 ipfsurl,
